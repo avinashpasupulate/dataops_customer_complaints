@@ -1,0 +1,24 @@
+
+#  csv raw data
+./data/raw/Consumer_Complaints.csv
+
+# terraform files & directories
+./tf/dev/.terraform/plugins/darwin_amd64/terraform-provider-aws_v2.8.0_x4
+*.tfstate
+*.tfstate.*
+.terraform
+
+#backup files
+*.bak
+
+# security
+*.pem
+
+# mac metadata
+.DS_Store
+
+# python
+__pycache__/
+
+# ipynb checkpoints
+.ipynb_checkpoints
