@@ -1,12 +1,14 @@
 
 #  csv raw data
-./data/raw/Consumer_Complaints.csv
+*.csv
+*.zip
 
 # terraform files & directories
-./tf/dev/.terraform/plugins/darwin_amd64/terraform-provider-aws_v2.8.0_x4
+.terraform/plugins/darwin_amd64/terraform-provider-aws_v2.8.0_x4
 *.tfstate
 *.tfstate.*
 .terraform
+terraform.tfvars
 
 #backup files
 *.bak

@@ -5,3 +5,4 @@ variable "aws_region" {
 }
 variable "aws_db_uname" {}
 variable "aws_db_pwd" {}
+variable "aws_db_name" {}

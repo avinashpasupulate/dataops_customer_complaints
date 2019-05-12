@@ -1,0 +1,10 @@
+# config file to load data to rds
+
+info:
+    base_path: /Users/Avinash/Documents/datascience/dataops/
+
+database:
+    schema: opencmsdb
+
+rds_attributes:
+    tf_path: /tf/dev/terraform.tfstate

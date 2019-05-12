@@ -13,6 +13,10 @@ provider "aws" {
 resource "aws_default_vpc" "default" {
 }
 
+#data
+data "http" "ip" {
+    url = "http://ipv4.icanhazip.com"
+}
 
 #subnet
 resource "aws_default_subnet" "default" {
@@ -27,7 +31,7 @@ resource "aws_default_security_group" "default" {
         from_port = "3306"
         to_port = "3306"
         protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
+        cidr_blocks = ["${chomp(data.http.ip.body)}/32"]
     }
     #allowing all outbound traffic
     egress{
@@ -45,8 +49,14 @@ resource "aws_db_instance" "default" {
     publicly_accessible = true
     skip_final_snapshot = true
     engine = "mysql"
-    name = "custcomp_db"
+    name = "${var.aws_db_name}"
     username = "${var.aws_db_uname}"
     password = "${var.aws_db_pwd}"
     vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
+
+    timeouts {
+        create = "3h",
+        delete = "3h",
+        update = "3h"
+        }
 }
