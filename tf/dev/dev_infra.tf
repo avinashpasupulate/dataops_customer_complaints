@@ -1,7 +1,7 @@
 provider "aws" {
     region = "us-east-1"
     profile = "default"
-t}
+}
 
 #resource "aws_instance" "model" {
 #    ami = "ami-2757f631"
@@ -42,12 +42,12 @@ resource "aws_default_security_group" "default" {
 }
 
 resource "random_string" "uname" {
-    length=15
-    special=false
+    length = 15
+    special = false
 }
 
 resource "random_string" "key" {
-    length=15
+    length = 15
 }
 
 resource "aws_db_instance" "default" {
