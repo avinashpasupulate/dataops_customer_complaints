@@ -5,7 +5,9 @@ RUN  apt-get update -y && \
      apt-get dist-upgrade -y && \
      apt-get -y autoremove && \
      apt-get clean && \
-     apt-get install -y --no-install-recommends apt-utils dialog unzip
+     apt-get install -y --no-install-recommends apt-utils dialog unzip nano && \
+     conda install pip -y && \
+     pip install awscli --upgrade
 
 COPY . /
 
