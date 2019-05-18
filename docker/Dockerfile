@@ -7,8 +7,7 @@ RUN  apt-get update -y && \
      apt-get clean && \
      apt-get install -y --no-install-recommends apt-utils dialog unzip nano && \
      conda install pip -y && \
-     pip install awscli --upgrade && \
-     mkdir .aws
+     pip install awscli --upgrade
 
 COPY . /
 
@@ -18,4 +17,4 @@ RUN apt-get update -y && \
     mv terraform /usr/local/bin && \
     rm -r terraform_0.11.14_linux_amd64.zip
 
-WORKDIR /dataops_opencms_data
+WORKDIR dataops_opencms_data

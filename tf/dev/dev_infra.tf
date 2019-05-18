@@ -1,8 +1,7 @@
 provider "aws" {
     region = "us-east-1"
-    shared_credentials_file = "/.aws/credentials"
-    profile = "opencms"
-}
+    profile = "default"
+t}
 
 #resource "aws_instance" "model" {
 #    ami = "ami-2757f631"
@@ -42,6 +41,15 @@ resource "aws_default_security_group" "default" {
     }
 }
 
+resource "r_string" "uname"{
+    length=15
+    special=false
+}
+
+resource "r_string" "key"{
+    length=15
+}
+
 resource "aws_db_instance" "default" {
     allocated_storage = 20
     storage_type = "gp2"
@@ -49,9 +57,9 @@ resource "aws_db_instance" "default" {
     publicly_accessible = true
     skip_final_snapshot = true
     engine = "mysql"
-    name = "${var.aws_db_name}"
-    username = "${var.aws_db_uname}"
-    password = "${var.aws_db_pwd}"
+    name = "opencmsdb"
+    username = "${r_string.uname.result}"
+    password = "${r_string.key.result}}"
     vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
 
     timeouts {
