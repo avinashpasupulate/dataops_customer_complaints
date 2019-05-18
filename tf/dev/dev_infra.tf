@@ -59,7 +59,7 @@ resource "aws_db_instance" "default" {
     engine = "mysql"
     name = "opencmsdb"
     username = "${r_string.uname.result}"
-    password = "${r_string.key.result}}"
+    password = "${r_string.key.result}"
     vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
 
     timeouts {
