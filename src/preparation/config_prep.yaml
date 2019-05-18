@@ -3,8 +3,6 @@
 info:
     base_path: /Users/Avinash/Documents/datascience/dataops/
 
-database:
-    schema: opencmsdb
-
 rds_attributes:
     tf_path: /tf/dev/terraform.tfstate
+    execution_timeout: 10800000

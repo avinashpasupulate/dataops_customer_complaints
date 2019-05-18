@@ -15,6 +15,7 @@ terraform.tfvars
 
 # security
 *.pem
+*.cnf
 
 # mac metadata
 .DS_Store

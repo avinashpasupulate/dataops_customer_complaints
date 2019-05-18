@@ -33,9 +33,6 @@
 					interest_held_by_physician_or_an_immediate_family_member text, 
 					payment_publication_date text
                      					);
-                    -- load raw csv data
-                    load data local infile '/Users/Avinash/Documents/datascience/dataops//data/raw/cms-open-payments-dataset-2013/ownership.csv'
-                    into table opencmsdb.ownership fields terminated by ',' enclosed by '"' lines terminated by '\r\n' ignore 1 rows;
             
 
 
@@ -109,9 +106,6 @@
 					program_year text, 
 					payment_publication_date text
                      					);
-                    -- load raw csv data
-                    load data local infile '/Users/Avinash/Documents/datascience/dataops//data/raw/cms-open-payments-dataset-2013/general_payments.csv'
-                    into table opencmsdb.general_payments fields terminated by ',' enclosed by '"' lines terminated by '\r\n' ignore 1 rows;
             
 
 
@@ -124,9 +118,6 @@
 					payment_type text, 
 					record_id text
                      					);
-                    -- load raw csv data
-                    load data local infile '/Users/Avinash/Documents/datascience/dataops//data/raw/cms-open-payments-dataset-2013/deleted.csv'
-                    into table opencmsdb.deleted fields terminated by ',' enclosed by '"' lines terminated by '\r\n' ignore 1 rows;
             
 
 
@@ -301,7 +292,4 @@
 					research_information_link text, 
 					context_of_research text
                      					);
-                    -- load raw csv data
-                    load data local infile '/Users/Avinash/Documents/datascience/dataops//data/raw/cms-open-payments-dataset-2013/research_payments.csv'
-                    into table opencmsdb.research_payments fields terminated by ',' enclosed by '"' lines terminated by '\r\n' ignore 1 rows;
             

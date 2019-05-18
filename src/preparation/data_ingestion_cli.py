@@ -1,9 +1,11 @@
 import os
+import sys
 import glob
 import json
 import yaml
 #import getpass
 import warnings
+import subprocess
 import pandas as pd
 import mysql.connector
 from jinja2 import Template
@@ -21,11 +23,37 @@ class data_load(object):
         # TODO:  change relative path
         with open(self.params['info']['base_path']+self.params['rds_attributes']['tf_path'], 'r') as f:
             tfstate = json.loads(f.read())
-            attributes = tfstate['modules'][0]['resources']['aws_db_instance.default']['primary']['attributes']
-            self.conninfo.extend((attributes['address'],
-                                  attributes['name'],
-                                  attributes['username'],
-                                  attributes['password']))
+            self.attributes = tfstate['modules'][0]['resources']['aws_db_instance.default']['primary']['attributes']
+            self.conninfo.extend((self.attributes['address'],
+                                  self.attributes['name'],
+                                  self.attributes['username'],
+                                  self.attributes['password']))
+
+    def bash_generator(self):
+        # generates sql to load data to rds
+        bash = []
+        files = glob.glob(self.params['info']['base_path']+'data/raw/*/*.csv')
+        for raw_path in files:
+            files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 2)
+            # table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
+            bash_split = Template('''
+                            cd {{data_path}}
+                            split -a 3 -l {{lines}} {{source_file}} {{prefix}}.part_
+                            mysqlimport --local --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-optionally-enclosed-by='"' --lines-terminated-by=' ' {{dbname}} {{prefix}}.part_*
+                            rm -r {{prefix}}.part_*
+                        ''')
+            parameters = {'lines': 5000,
+                          'data_path': os.path.dirname(raw_path),
+                          'source_file': os.path.basename(raw_path),
+                          'prefix': os.path.basename(raw_path).split('.')[0],
+                          'dbname': self.attributes['name'],
+                          'host': self.attributes['address'],
+                          'user': self.attributes['username'],
+                          'pwd': self.attributes['password']
+                         }
+            bash.append(bash_split.render(**parameters))
+        return ' '.join(i for i in bash)
+
 
     def sql_generator(self):
         # generates sql to load data to rds
@@ -45,14 +73,10 @@ class data_load(object):
                     create table if not exists {{schema}}.{{table_name}} (\t\t\t\t\t
                     {{columns}}
                      \t\t\t\t\t);
-                    -- load raw csv data
-                    load data local infile '{{raw_path}}'
-                    into table {{schema}}.{{table_name}} fields terminated by ',' enclosed by '"' lines terminated by '\\r\\n' ignore 1 rows;
             ''')
             params = {'schema': self.conninfo[1],
                       'table_name': table_name,
                       'columns': cols,
-                      'raw_path': raw_path
                      }
             sql.append(query.render(**params))
         return '\n\n'.join(i for i in sql)
@@ -74,7 +98,7 @@ class data_load(object):
                 # mysql connector cannot execute a sql script
                 for command in query.split(';'):
                     try:
-                        if len(command)>1:
+                        if len(command)>2:
                             cursor.execute(command+';')
                             print(command)
                             print('############# completed ##################')
@@ -89,8 +113,17 @@ class data_load(object):
                 connection.close()
                 print('db connection is closed. . . ')
 
+
+    def execute_bash(self, bash):
+        bash = '; '.join(i.strip() for i in bash.split('\n') if len(i.strip())>2)
+        p = subprocess.Popen(bash, shell=True, stdout = subprocess.PIPE, bufsize=1)
+        for i in iter(p.stdout.readline, ''):
+            print(i.strip())
+        p.stdout.close()
+        p.wait()
+
 if __name__ == '__main__':
-    parser = OptionParser(usage = "usage: python data_ingestion.py configfile outputfile", version = "1.0")
+    parser = OptionParser(usage = "usage: python data_ingestion.py configfile sqloutput bashoutput", version = "1.0")
     opts, args = parser.parse_args()
     if len(args)<2:
         print('either config and/or output file is missing')
@@ -99,9 +132,14 @@ if __name__ == '__main__':
     # importing parameters from config_prep.yaml file
     config = yaml.load(open(args[0], 'r'))
     generator = data_load(config)
+    bash = generator.bash_generator()
     query = generator.sql_generator()
     generator.execute_query(query)
+    generator.execute_bash(bash)
 
     # write sql statement to file
     with open(args[1], 'w') as f:
+        f.write(bash)
+
+    with open(args[2], 'w') as f:
         f.write(query)

@@ -38,3 +38,16 @@ Create RDS:
 '''sh pipeline/create_infra.sh'''
 
 '''python3 src/preparation/data_ingestion.py'''
+
+
+**Reference:**
+* https://thuijskens.github.io/2018/11/13/useful-code-is-production-code/
+
+
+**Setup:**
+'''brew install mysql'''
+
+**Docker:**
+'''docker build --rm -t avipasup/dataops .'''
+'''docker run -d --name ftpd_server -p 21:21 -p 30000-30009:30000-30009 -e "PUBLICHOST=127.0.0.1" -e "FTP_USER_NAME=opencmsuser" -e "FTP_USER_PASS=opencmspwd" -e "FTP_USER_HOME=/home" avipasup/dataops
+'''
