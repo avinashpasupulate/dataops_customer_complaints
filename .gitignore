@@ -2,7 +2,7 @@
 #  csv raw data
 *.csv
 *.zip
-
+.aws/*
 # terraform files & directories
 .terraform/plugins/darwin_amd64/terraform-provider-aws_v2.8.0_x4
 *.tfstate
@@ -25,3 +25,5 @@ __pycache__/
 
 # ipynb checkpoints
 .ipynb_checkpoints
+config
+credentials

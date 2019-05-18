@@ -7,7 +7,8 @@ RUN  apt-get update -y && \
      apt-get clean && \
      apt-get install -y --no-install-recommends apt-utils dialog unzip nano && \
      conda install pip -y && \
-     pip install awscli --upgrade
+     pip install awscli --upgrade && \
+     mkdir .aws
 
 COPY . /
 
