@@ -9,12 +9,16 @@ RUN  apt-get update -y && \
      conda install pip -y && \
      pip install awscli --upgrade
 
-COPY . /
-
 RUN apt-get update -y && \
     git clone -b beta https://github.com/avinashpasupulate/dataops_opencms_data.git && \
+    wget https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip && \
     unzip terraform_0.11.14_linux_amd64.zip && \
     mv terraform /usr/local/bin && \
     rm -r terraform_0.11.14_linux_amd64.zip
+
+#ENTRYPOINT aws s3 cp s3://dataops-opencms/pgyr17_p011819.zip /dataops_opencms_data/data/raw/ && \
+#           unzip /dataops_opencms_data/data/raw/pgyr17_p011819.zip && \
+#           sh pipeline/create_infra.sh && \
+#           sh pipeline/data_ingestion.sh
 
 WORKDIR dataops_opencms_data

@@ -41,12 +41,12 @@ resource "aws_default_security_group" "default" {
     }
 }
 
-resource "r_string" "uname"{
+resource "r_string" "uname" {
     length=15
     special=false
 }
 
-resource "r_string" "key"{
+resource "r_string" "key" {
     length=15
 }
 
