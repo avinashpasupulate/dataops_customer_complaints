@@ -41,12 +41,12 @@ resource "aws_default_security_group" "default" {
     }
 }
 
-resource "r_string" "uname" {
+resource "random_string" "uname" {
     length=15
     special=false
 }
 
-resource "r_string" "key" {
+resource "random_string" "key" {
     length=15
 }
 
@@ -58,8 +58,8 @@ resource "aws_db_instance" "default" {
     skip_final_snapshot = true
     engine = "mysql"
     name = "opencmsdb"
-    username = "${r_string.uname.result}"
-    password = "${r_string.key.result}"
+    username = "${random_string.uname.result}"
+    password = "${random_string.key.result}"
     vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
 
     timeouts {
