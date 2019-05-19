@@ -21,7 +21,7 @@ class data_load(object):
         # getting rds details from tfstate file created after launch
         self.conninfo = []
         # TODO:  change relative path
-        with open(self.params['info']['base_path']+self.params['rds_attributes']['tf_path'], 'r') as f:
+        with open(self.params['rds_attributes']['tf_path'], 'r') as f:
             tfstate = json.loads(f.read())
             self.attributes = tfstate['modules'][0]['resources']['aws_db_instance.default']['primary']['attributes']
             self.conninfo.extend((self.attributes['address'],
@@ -32,7 +32,7 @@ class data_load(object):
     def bash_generator(self):
         # generates sql to load data to rds
         bash = []
-        files = glob.glob(self.params['info']['base_path']+'data/raw/*/*.csv')
+        files = glob.glob('data/raw/*/*.csv')
         for raw_path in files:
             files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 2)
             # table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
@@ -58,7 +58,7 @@ class data_load(object):
     def sql_generator(self):
         # generates sql to load data to rds
         sql = []
-        files = glob.glob(self.params['info']['base_path']+'/data/raw/*/*.csv')
+        files = glob.glob('/data/raw/*/*.csv')
         for raw_path in files:
             files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 10)
             # creating list of columns to include in ddl statement
