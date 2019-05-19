@@ -129,7 +129,7 @@ if __name__ == '__main__':
         print('either config and/or output file is missing')
         exit(0)
 
-    # importing parameters from config_prep.yaml file
+    # importing parameters from config_prep.yaml file - uage of config.yaml is not required too few ext params, will be removed later on
     config = yaml.load(open(args[0], 'r'))
     generator = data_load(config)
     bash = generator.bash_generator()
