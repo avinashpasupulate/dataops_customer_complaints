@@ -117,10 +117,7 @@ class data_load(object):
     def execute_bash(self, bash):
         bash = '; '.join(i.strip() for i in bash.split('\n') if len(i.strip())>2)
         p = subprocess.Popen(bash, shell=True, stdout = subprocess.PIPE, bufsize=1)
-        for i in iter(p.stdout.readline, b''):
-            print(i.strip())
-        p.stdout.close()
-        p.wait()
+
 
 if __name__ == '__main__':
     parser = OptionParser(usage = "usage: python data_ingestion.py configfile sqloutput bashoutput", version = "1.0")

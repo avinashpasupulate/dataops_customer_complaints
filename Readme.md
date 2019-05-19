@@ -53,3 +53,7 @@ Create RDS:
 
 Temporarily Created EC2 with role access to rds vpc and read s3
 to deploy above docker container and load data to rds (resources would be destroyed once processed, so automating on requirement)
+
+
+
+docker run --rm -it -v /host_volume:/host_volume/ avipasup/dataops_load_dev:latest /bin/bash
