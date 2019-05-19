@@ -42,12 +42,16 @@ resource "aws_default_security_group" "default" {
 }
 
 resource "random_string" "uname" {
-    length = 15
+    length = 10
     special = false
+    number = false
+    upper = false
 }
 
 resource "random_string" "key" {
-    length = 15
+    length = 10
+    special = false
+    number = true
 }
 
 resource "aws_db_instance" "default" {

@@ -47,7 +47,9 @@ Create RDS:
 **Setup:**
 '''brew install mysql'''
 
-**Docker:**
-'''docker build --rm -t avipasup/dataops .'''
-'''docker run -d --name ftpd_server -p 21:21 -p 30000-30009:30000-30009 -e "PUBLICHOST=127.0.0.1" -e "FTP_USER_NAME=opencmsuser" -e "FTP_USER_PASS=opencmspwd" -e "FTP_USER_HOME=/home" avipasup/dataops
+**Docker_data_load:**
+'''docker build --no-cache --rm -t avipasup/dataops_load_dev .'''
 '''
+
+Temporarily Created EC2 with role access to rds vpc and read s3
+to deploy above docker container and load data to rds (resources would be destroyed once processed, so automating on requirement)
