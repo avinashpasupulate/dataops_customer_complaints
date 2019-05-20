@@ -15,6 +15,8 @@ RUN apt-get update -y && \
     rm -r terraform_0.11.14_linux_amd64.zip && \
     apt-get install -y mysql-client
 
+WORKDIR dataops_opencms_data
+
 ENTRYPOINT conda install -y pip \
                             pandas==0.23.4 \
                             mysql==5.7.22 \
@@ -25,7 +27,5 @@ ENTRYPOINT conda install -y pip \
            aws s3 cp s3://dataops-opencms/pgyr17_p011819.zip /dataops_opencms_data/data/raw/ && \
            unzip /dataops_opencms_data/data/raw/pgyr17_p011819.zip && \
            sh pipeline/create_infra.sh && \
-           sh pipeline/data_ingestion.sh && \
-           cp /dataops_opencms_data/tf/dev/terraform.tfstate /host_volume/terraform.tfstate
-
-WORKDIR dataops_opencms_data
+           aws s3 cp /dataops_opencms_data/tf/dev/terraform.tfstate s3://dataops-opencms/terraform.tfstate && \
+           sh pipeline/data_ingestion.sh

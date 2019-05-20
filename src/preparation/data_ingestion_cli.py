@@ -58,7 +58,7 @@ class data_load(object):
     def sql_generator(self):
         # generates sql to load data to rds
         sql = []
-        files = glob.glob('/data/raw/*/*.csv')
+        files = glob.glob('data/raw/*/*.csv')
         for raw_path in files:
             files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 10)
             # creating list of columns to include in ddl statement
@@ -133,6 +133,7 @@ if __name__ == '__main__':
     bash = generator.bash_generator()
     query = generator.sql_generator()
     generator.execute_query(query)
+    print(query)
     generator.execute_bash(bash)
 
     # write sql statement to file
