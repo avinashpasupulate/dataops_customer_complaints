@@ -43,7 +43,7 @@ class data_load(object):
                             rm -r {{prefix}}.part_*
                         ''')
             parameters = {'lines': 5000,
-                          'data_path': os.path.dirname(raw_path),
+                          'data_path': os.path.abspath(raw_path),
                           'source_file': os.path.basename(raw_path),
                           'prefix': os.path.basename(raw_path).split('.')[0],
                           'dbname': self.attributes['name'],
@@ -133,7 +133,6 @@ if __name__ == '__main__':
     bash = generator.bash_generator()
     query = generator.sql_generator()
     generator.execute_query(query)
-    print(query)
     generator.execute_bash(bash)
 
     # write sql statement to file
