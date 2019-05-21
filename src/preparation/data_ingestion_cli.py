@@ -43,7 +43,7 @@ class data_load(object):
                             rm -r {{prefix}}.part_*
                         ''')
             parameters = {'lines': 5000,
-                          'data_path': os.path.abspath(raw_path),
+                          'data_path': os.path.dirname(os.path.abspath(raw_path)),
                           'source_file': os.path.basename(raw_path),
                           'prefix': os.path.basename(raw_path).split('.')[0],
                           'dbname': self.attributes['name'],
