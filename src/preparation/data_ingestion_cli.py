@@ -38,11 +38,11 @@ class data_load(object):
             # table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
             bash_split = Template('''
                             cd {{data_path}}
-                            split -a 3 -l {{lines}} {{source_file}} {{prefix}}.part_
+                            split -a 4 -l {{lines}} {{source_file}} {{prefix}}.part_
                             mysqlimport --local --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-optionally-enclosed-by='"' --lines-terminated-by='/r/n' {{dbname}} {{prefix}}.part_*
                             rm -r {{prefix}}.part_*
                         ''')
-            parameters = {'lines': 5000,
+            parameters = {'lines': 1000,
                           'data_path': os.path.dirname(os.path.abspath(raw_path)),
                           'source_file': os.path.basename(raw_path),
                           'prefix': os.path.basename(raw_path).split('.')[0],

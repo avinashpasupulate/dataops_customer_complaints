@@ -1,6 +1,7 @@
 #!bin/bash
 
 #commands
+sudo -s
 yum update -y
 amazon-linux-extras install docker -y
 service docker start
