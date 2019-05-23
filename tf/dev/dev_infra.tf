@@ -1,5 +1,6 @@
 provider "aws" {
     region = "us-east-1"
+    shared_credentials_file = "/Users/avinashpasupulate/.aws/credentials"
     profile = "default"
 }
 
@@ -57,7 +58,7 @@ resource "random_string" "key" {
 resource "aws_db_instance" "default" {
     allocated_storage = 20
     storage_type = "gp2"
-    instance_class = "db.t2.micro"
+    instance_class = "db.m4.large"
     publicly_accessible = true
     skip_final_snapshot = true
     engine = "mysql"

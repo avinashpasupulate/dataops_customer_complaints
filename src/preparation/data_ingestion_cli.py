@@ -38,11 +38,11 @@ class data_load(object):
             # table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
             bash_split = Template('''
                             cd {{data_path}}
-                            split -a 4 -l {{lines}} {{source_file}} {{prefix}}.part_
-                            mysqlimport --local --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-optionally-enclosed-by='"' --lines-terminated-by='/n' {{dbname}} {{prefix}}.part_*
+                            split -b 100m {{source_file}} {{prefix}}.part_
+                            mysqlimport --local --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by=' ' {{dbname}} {{prefix}}.part_*
                             rm -r {{prefix}}.part_*
                         ''')
-            parameters = {'lines': 1000,
+            parameters = {'lines': 4000,
                           'data_path': os.path.dirname(os.path.abspath(raw_path)),
                           'source_file': os.path.basename(raw_path),
                           'prefix': os.path.basename(raw_path).split('.')[0],
@@ -132,8 +132,6 @@ if __name__ == '__main__':
     generator = data_load(config)
     bash = generator.bash_generator()
     query = generator.sql_generator()
-    generator.execute_query(query)
-    generator.execute_bash(bash)
 
     # write sql statement to file
     with open(args[1], 'w') as f:
@@ -141,3 +139,6 @@ if __name__ == '__main__':
 
     with open(args[2], 'w') as f:
         f.write(query)
+
+    generator.execute_query(query)
+    generator.execute_bash(bash)
