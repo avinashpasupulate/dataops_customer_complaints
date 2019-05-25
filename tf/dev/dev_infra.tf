@@ -61,6 +61,7 @@ resource "aws_db_instance" "default" {
     instance_class = "db.t2.micro"
     publicly_accessible = true
     skip_final_snapshot = true
+    backup_retention_period = 0
     engine = "mysql"
     name = "opencmsdb"
     username = "${random_string.uname.result}"
