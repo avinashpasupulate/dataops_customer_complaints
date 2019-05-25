@@ -56,9 +56,9 @@ resource "random_string" "key" {
 }
 
 resource "aws_db_instance" "default" {
-    allocated_storage = 20
+    allocated_storage = 60
     storage_type = "gp2"
-    instance_class = "db.t2.micro"
+    instance_class = "db.m4.large"
     publicly_accessible = true
     skip_final_snapshot = true
     backup_retention_period = 0

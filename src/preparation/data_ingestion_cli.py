@@ -38,6 +38,7 @@ class data_load(object):
             # table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
             bash_split = Template('''
                             cd {{data_path}}
+                            echo "loading to {{prefix}} table . . . "
                             split -b 100m {{source_file}} {{prefix}}.part_
                             mysqlimport --local --compress --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
                             rm -r {{prefix}}.part_*
