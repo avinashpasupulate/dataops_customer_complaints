@@ -147,7 +147,7 @@ if __name__ == '__main__':
         f.write(bash)
 
     with open(args[2], 'w') as f:
-        f.write(query)
+        f.write(query[0])
     print('creating tables. . . . . \n{}'.format(query[0]))
     generator.execute_query(query[0])
     print('loading data to tables. . . . \n{}'.format(bash))
