@@ -80,8 +80,8 @@ class data_load(object):
                      }
 
             drop_query = Template('''
-                         --drops first row containing header from table
-                         delete top (1) from {{schema}}.{{table_name}}
+                         -- drops first row containing header from table
+                         delete from {{schema}}.{{table_name}} limit 1;
             ''')
             drop_params = {'schema': self.conninfo[1],
                            'table_name': table_name,
