@@ -55,6 +55,31 @@ resource "random_string" "key" {
     number = true
 }
 
+resource "aws_db_parameter_group" "default" {
+        name = "rds-pg"
+        family = "mysql5.7"
+
+        parameter {
+                  name = "max_execution_time"
+                  value = 10800000
+        }
+
+        parameter {
+                  name = "max_allowed_packet"
+                  value = 512000000
+        }
+
+        parameter {
+                  name = "net_write_timeout"
+                  value = 10800000
+        }
+
+        parameter {
+                  name = "bulk_insert_buffer_size"
+                  value = 512000000
+        }
+}
+
 resource "aws_db_instance" "default" {
     allocated_storage = 60
     storage_type = "gp2"
@@ -64,6 +89,7 @@ resource "aws_db_instance" "default" {
     backup_retention_period = 0
     engine = "mysql"
     name = "opencmsdb"
+    parameter_group_name = "${aws_db_parameter_group.default.id}"
     username = "${random_string.uname.result}"
     password = "${random_string.key.result}"
     vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
