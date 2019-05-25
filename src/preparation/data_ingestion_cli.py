@@ -57,6 +57,7 @@ class data_load(object):
     def sql_generator(self):
         # generates sql to load data to rds
         sql = []
+        sql_drop = []
         files = glob.glob('data/raw/*/*.csv')
         for raw_path in files:
             files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 10)
@@ -75,10 +76,19 @@ class data_load(object):
             ''')
             params = {'schema': self.conninfo[1],
                       'table_name': table_name,
-                      'columns': cols,
+                      'columns': cols
                      }
+
+            drop_query = Template('''
+                         --drops first row containing header from table
+                         delete top (1) from {{schema}}.{{table_name}}
+            ''')
+            drop_params = {'schema': self.conninfo[1],
+                           'table_name': table_name,
+                          }
+            sql_drop.append(drop_query.render(**drop_params))
             sql.append(query.render(**params))
-        return '\n\n'.join(i for i in sql)
+        return ['\n\n'.join(i for i in sql), '\n\n'.join(i for i in sql_drop)]
 
     def execute_query(self, query):
         try:
@@ -138,6 +148,10 @@ if __name__ == '__main__':
 
     with open(args[2], 'w') as f:
         f.write(query)
-
-    generator.execute_query(query)
+    print('creating tables. . . . . \n{}'.format(query[0]))
+    generator.execute_query(query[0])
+    print('loading data to tables. . . . \n{}'.format(bash))
     generator.execute_bash(bash)
+    print('dropping headers. . . .\n{}'.format(query[1]))
+    generator.execute_query(query[1])
+    print('completed. . . .')
