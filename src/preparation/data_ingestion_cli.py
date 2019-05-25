@@ -97,7 +97,6 @@ class data_load(object):
                                                  user = self.conninfo[2],
                                                  passwd = self.conninfo[3],
                                                  database = self.conninfo[1])
-            print(connection)
             # executes query generated in the sql_generator function
             if connection.is_connected():
                 dbinfo = connection.get_server_info()
@@ -151,7 +150,7 @@ if __name__ == '__main__':
         f.write(query[0])
     print('creating tables. . . . . \n')
     generator.execute_query(query[0])
-    print('loading data to tables. . . . \n{}'.format(bash))
+    print('loading data to tables. . . . \n')
     generator.execute_bash(bash)
     print('dropping headers. . . .\n')
     generator.execute_query(query[1])
