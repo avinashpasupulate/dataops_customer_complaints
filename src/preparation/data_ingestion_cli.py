@@ -104,6 +104,9 @@ class data_load(object):
                 print('connected to mysql server version: {}'.format(dbinfo))
                 cursor = connection.cursor()
                 # setting max execution time to prevent timeouts when loading large files
+                cursor.execute('set session max_execution_time=10800000;') # TODO:  self.params['rds_attributes']['execution_timeout'])
+                cursor.execute('set session max_allowed_packet=512000000;')
+                cursor.execute('set session net_write_timeout=10800000;')
                 # mysql connector cannot execute a sql script
                 for command in query.split(';'):
                     try:
