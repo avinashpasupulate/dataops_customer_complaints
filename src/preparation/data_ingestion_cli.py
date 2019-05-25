@@ -84,7 +84,7 @@ class data_load(object):
                          delete from {{schema}}.{{table_name}} limit 1;
             ''')
             drop_params = {'schema': self.conninfo[1],
-                           'table_name': table_name,
+                           'table_name': table_name
                           }
             sql_drop.append(drop_query.render(**drop_params))
             sql.append(query.render(**params))
@@ -97,6 +97,7 @@ class data_load(object):
                                                  user = self.conninfo[2],
                                                  passwd = self.conninfo[3],
                                                  database = self.conninfo[1])
+            print(connection)
             # executes query generated in the sql_generator function
             if connection.is_connected():
                 dbinfo = connection.get_server_info()
@@ -148,10 +149,10 @@ if __name__ == '__main__':
 
     with open(args[2], 'w') as f:
         f.write(query[0])
-    print('creating tables. . . . . \n{}'.format(query[0]))
+    print('creating tables. . . . . \n')
     generator.execute_query(query[0])
     print('loading data to tables. . . . \n{}'.format(bash))
     generator.execute_bash(bash)
-    print('dropping headers. . . .\n{}'.format(query[1]))
+    print('dropping headers. . . .\n')
     generator.execute_query(query[1])
     print('completed. . . .')
