@@ -40,10 +40,10 @@ class data_load(object):
                             cd {{data_path}}
                             split -b 100m {{source_file}} {{prefix}}.part_
                             mysqlimport --local --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
+                            mysql -u {{user}} -p{{pwd}} {{dbname}} -e "DELETE TOP (1) FROM {{dbname}}.{{prefix}}"
                             rm -r {{prefix}}.part_*
                         ''')
-            parameters = {'lines': 4000,
-                          'data_path': os.path.dirname(os.path.abspath(raw_path)),
+            parameters = {'data_path': os.path.dirname(os.path.abspath(raw_path)),
                           'source_file': os.path.basename(raw_path),
                           'prefix': os.path.basename(raw_path).split('.')[0],
                           'dbname': self.attributes['name'],
