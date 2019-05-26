@@ -75,6 +75,26 @@ resource "aws_db_parameter_group" "default" {
         }
 
         parameter {
+                  name = "net_read_timeout"
+                  value = 10800000
+        }
+
+        parameter {
+                  name = "connect_timeout"
+                  value = 10800000
+        }
+
+        parameter {
+                  name = "wait_timeout"
+                  value = 10800000
+        }
+
+        parameter {
+                  name = "interactive_timeout"
+                  value = 10800000
+        }
+
+        parameter {
                   name = "bulk_insert_buffer_size"
                   value = 512000000
         }
