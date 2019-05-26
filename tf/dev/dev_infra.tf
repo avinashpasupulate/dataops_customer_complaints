@@ -83,7 +83,7 @@ resource "aws_db_parameter_group" "default" {
 resource "aws_db_instance" "default" {
     allocated_storage = 60
     storage_type = "gp2"
-    instance_class = "db.m4.large"
+    instance_class = "db.t2.micro"
     publicly_accessible = true
     skip_final_snapshot = true
     backup_retention_period = 0
