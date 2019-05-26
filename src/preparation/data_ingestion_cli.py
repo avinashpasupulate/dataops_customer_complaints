@@ -39,8 +39,8 @@ class data_load(object):
             bash_split = Template('''
                             cd {{data_path}}
                             echo "loading to {{prefix}} table . . . "
-                            split -b 100m {{source_file}} {{prefix}}.part_
-                            mysqlimport --local --compress --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
+                            split -a 6 -b 15m {{source_file}} {{prefix}}.part_
+                            mysqlimport --local --use-threads 4 --compress --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
                             rm -r {{prefix}}.part_*
                         ''')
             parameters = {'data_path': os.path.dirname(os.path.abspath(raw_path)),
