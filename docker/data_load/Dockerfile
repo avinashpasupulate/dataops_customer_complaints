@@ -27,6 +27,7 @@ ENTRYPOINT conda install -y pip \
            mkdir data && mkdir data/raw && mkdir data/raw/pgyr17_p011819 && \
            aws s3 cp s3://dataops-opencms/pgyr17_p011819.zip data/raw/ && \
            unzip data/raw/pgyr17_p011819.zip -d data/raw/pgyr17_p011819/ && \
+           ls data/raw/pgyr17_p011819/ && \
            sh pipeline/create_infra.sh && \
            aws s3 cp tf/dev/terraform.tfstate s3://dataops-opencms/terraform.tfstate && \
            ls data/raw/ && \

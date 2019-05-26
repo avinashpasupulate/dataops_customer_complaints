@@ -13,9 +13,9 @@ provider "aws" {
 resource "aws_default_vpc" "default" {
 }
 
-#data
+#data - changed to private ip
 data "http" "ip" {
-    url = "http://ipv4.icanhazip.com"
+    url = "http://169.254.169.254/latest/meta-data/local-ipv4/"
 }
 
 #subnet
