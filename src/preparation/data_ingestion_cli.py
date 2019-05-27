@@ -3,6 +3,7 @@ import sys
 import glob
 import json
 import yaml
+import signal
 #import getpass
 import warnings
 import subprocess
@@ -13,14 +14,13 @@ from optparse import OptionParser
 
 warnings.filterwarnings("ignore")
 
-# TODO:  getting timeouts when loading large data - increased timeouts in rds tf
 class data_load(object):
     def __init__(self, params):
         # initializing parameters
         self.params = params
         # getting rds details from tfstate file created after launch
         self.conninfo = []
-        # TODO:  change relative path
+        self.rollback = 'sh pipeline/destroy_infra.sh'
         with open(self.params['rds_attributes']['tf_path'], 'r') as f:
             tfstate = json.loads(f.read())
             self.attributes = tfstate['modules'][0]['resources']['aws_db_instance.default']['primary']['attributes']
@@ -35,7 +35,6 @@ class data_load(object):
         files = glob.glob('data/raw/*/*.csv')
         for raw_path in files:
             files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 2)
-            # table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
             bash_split = Template('''
                             cd {{data_path}}
                             echo "loading to {{prefix}} table . . . "
@@ -101,45 +100,58 @@ class data_load(object):
             # executes query generated in the sql_generator function
             if connection.is_connected():
                 dbinfo = connection.get_server_info()
-                print('connected to mysql server version: {}'.format(dbinfo))
+                print('\nconnected to mysql server version: {}'.format(dbinfo))
                 cursor = connection.cursor()
-                # setting max execution time to prevent timeouts when loading large files
+                # setting max execution time, max_packet_size to prevent timeouts when loading large files
 
                 # mysql connector cannot execute a sql script
                 for command in query.split(';'):
                     try:
-                        if len(command)>2:
+                        if len(command.strip())>2:
                             cursor.execute(command+';')
                             print(command)
-                            print('############# completed ##################')
+                            print('\n############# completed ##################\n')
                     except IOError as msg:
-                        print('error executing query. . {}'.format(msg))
+                        print('\nerror executing query. . {}\n'.format(msg))
+                        print('\nrolling back deployed resources . . . \n')
+                        #generator.execute_bash(self.rollback)
+                        exit(0)
         except mysql.connector.Error as e:
-            print('error connecting to db: {} . . .'.format(e))
+            print('\nerror connecting to db: {} . . .'.format(e))
+            print('\nrolling back deployed resources . . . \n')
+            #generator.execute_bash(self.rollback)
+            exit(0)
         finally:
             if connection.is_connected():
                 cursor.close()
                 connection.commit()
                 connection.close()
-                print('db connection is closed. . . ')
-
+                print('\ndb connection is closed. . . \n')
 
     def execute_bash(self, bash):
         bash = '; '.join(i.strip() for i in bash.split('\n') if len(i.strip())>2)
-        p = subprocess.Popen(bash, shell=True, stdout = subprocess.PIPE, bufsize=1)
-        print(p.communicate()[0])
-        print('bash: ', bash)
+        p = subprocess.Popen(bash, shell=True, stdout = subprocess.PIPE, bufsize=1, preexec_fn=os.setsid)
+        for i in iter(p.stdout.readline, ''):
+            if i != b'':
+                print(i.decode('UTF-8'))
+        p.stdout.close()
 
 if __name__ == '__main__':
+    # TODO: include more error handlers, rollback & unit tests (pyunit)
+    # TODO: Integrate with jenkins
     parser = OptionParser(usage = "usage: python data_ingestion.py configfile sqloutput bashoutput", version = "1.0")
     opts, args = parser.parse_args()
     if len(args)<2:
-        print('either config and/or output file is missing')
+        print('\neither config and/or output file is missing . . .\n')
         exit(0)
 
     # importing parameters from config_prep.yaml file - uage of config.yaml is not required too few ext params, will be removed later on
     config = yaml.load(open(args[0], 'r'))
-    generator = data_load(config)
+    try:
+        generator = data_load(config)
+    except:
+        print('\none of the configuration parameters is not defined properly, most likely .tfstate is not populated yet. . . \n')
+        exit(0)
     bash = generator.bash_generator()
     query = generator.sql_generator()
 
@@ -149,10 +161,10 @@ if __name__ == '__main__':
 
     with open(args[2], 'w') as f:
         f.write(query[0])
-    print('creating tables. . . . . \n')
+    print('\ncreating tables. . . . . \n')
     generator.execute_query(query[0])
-    print('loading data to tables. . . . \n')
+    print('\nloading data to tables. . . . \n')
     generator.execute_bash(bash)
-    print('dropping headers. . . .\n')
+    print('\ndropping headers. . . .\n')
     generator.execute_query(query[1])
-    print('completed. . . .')
+    print('\ncompleted. . . .\n')

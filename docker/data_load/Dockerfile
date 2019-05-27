@@ -31,4 +31,5 @@ ENTRYPOINT conda install -y pip \
            sh pipeline/create_infra.sh && \
            aws s3 cp tf/dev/terraform.tfstate s3://dataops-opencms/terraform.tfstate && \
            ls data/raw/ && \
-           sh pipeline/data_ingestion.sh
+           sh pipeline/data_ingestion.sh && \
+           aws s3 cp src/preparation/output_load s3://dataops-opencms/output_load
