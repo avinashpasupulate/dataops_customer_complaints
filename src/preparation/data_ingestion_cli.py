@@ -160,6 +160,7 @@ class data_load(object):
             logging.error(' error in executing bash script. . . \n')
             logging.error(' rolling back deployed resources . . . \n')
             logging.info(tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+            exit(0)
 
 if __name__ == '__main__':
 
@@ -167,6 +168,7 @@ if __name__ == '__main__':
                         filemode = 'a',
                         format='%(asctime)s %(levelname)s: %(message)s',
                         datefmt = '%d/%m/%Y %H:%M:%S')
+                        
     # defining options for running python file
     parser = OptionParser(usage = "usage: python data_ingestion.py configfile sqloutput bashoutput", version = "1.0")
     opts, args = parser.parse_args()

@@ -1,21 +1,4 @@
-29/05/2019 00:50:46 ERROR:  error in executing bash script. . . 
+29/05/2019 02:19:20 ERROR:  error in executing bash script. . . 
 
-29/05/2019 00:50:46 ERROR:  rolling back deployed resources . . . 
+29/05/2019 02:19:20 ERROR:  rolling back deployed resources . . . 
 
-29/05/2019 00:52:33 ERROR:  error in executing bash script. . . 
-
-29/05/2019 00:52:33 ERROR:  rolling back deployed resources . . . 
-
-29/05/2019 00:56:59 ERROR:  error in executing bash script. . . 
-
-29/05/2019 00:56:59 ERROR:  rolling back deployed resources . . . 
-
-29/05/2019 00:59:44 ERROR:  error in executing bash script. . . 
-
-29/05/2019 00:59:44 ERROR:  rolling back deployed resources . . . 
-
-29/05/2019 01:22:38 ERROR:  error in executing bash script. . . 
-
-29/05/2019 01:22:38 ERROR:  rolling back deployed resources . . . 
-
-29/05/2019 01:28:05 ERROR:  error connecting to db: 2005 (HY000): Unknown MySQL server host 'terraform-20190528190815869400000001.csclevrtct8b.us-east-1.rds.amazonaws.com' (0) . . .
