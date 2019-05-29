@@ -1,4 +1,51 @@
-29/05/2019 02:19:20 ERROR:  error in executing bash script. . . 
+30/05/2019 00:08:48 INFO:  connected to mysql server version: 5.7.22
+30/05/2019 00:08:49 INFO:  db connection is closed. . . 
 
-29/05/2019 02:19:20 ERROR:  rolling back deployed resources . . . 
+30/05/2019 00:08:49 INFO:  execute_query function was executed in 6.43s
+30/05/2019 00:08:49 INFO:  loading data to tables. . . . 
 
+30/05/2019 00:08:58 INFO: loading to b_ownership table . . . 
+opencmsdb.b_ownership: Records: 2631  Deleted: 0  Skipped: 0  Warnings: 0
+
+30/05/2019 00:08:58 INFO:  execute_bash function was executed in 8.84s
+30/05/2019 00:08:58 INFO:  dropping headers. . . .
+
+30/05/2019 00:09:03 INFO:  connected to mysql server version: 5.7.22
+30/05/2019 00:09:04 INFO:  db connection is closed. . . 
+
+30/05/2019 00:09:04 INFO:  execute_query function was executed in 6.13s
+30/05/2019 00:09:04 INFO:  completed loading data to rds. . . .
+
+30/05/2019 00:09:51 DEBUG: read data from tf/dev/terraform.tfstate
+30/05/2019 00:09:51 INFO:  bash_generator function was executed in 0.01s
+30/05/2019 00:09:51 INFO:  sql_generator function was executed in 0.01s
+30/05/2019 00:09:51 INFO:  creating tables. . . . . 
+
+30/05/2019 00:10:01 INFO:  connected to mysql server version: 5.7.22
+30/05/2019 00:10:03 INFO:  db connection is closed. . . 
+
+30/05/2019 00:10:03 INFO:  execute_query function was executed in 11.69s
+30/05/2019 00:10:03 INFO:  loading data to tables. . . . 
+
+30/05/2019 00:10:03 ERROR:  error in executing bash script. . . 
+
+30/05/2019 00:10:03 ERROR:  rolling back deployed resources . . . 
+
+30/05/2019 00:12:41 DEBUG: read data from tf/dev/terraform.tfstate
+30/05/2019 00:12:41 INFO:  bash_generator function was executed in 0.01s
+30/05/2019 00:12:41 INFO:  sql_generator function was executed in 0.01s
+30/05/2019 00:12:41 INFO:  creating tables. . . . . 
+
+30/05/2019 00:12:46 INFO:  connected to mysql server version: 5.7.22
+30/05/2019 00:12:48 INFO:  db connection is closed. . . 
+
+30/05/2019 00:12:48 INFO:  execute_query function was executed in 7.67s
+30/05/2019 00:12:48 INFO:  loading data to tables. . . . 
+
+30/05/2019 00:12:54 ERROR:  error in executing bash script. . . 
+
+30/05/2019 00:12:54 ERROR:  rolling back deployed resources . . . 
+
+30/05/2019 00:12:54 DEBUG: /var/folders/sc/d8w16dws1gdg0ky02rxdy5n80000gn/T/tmp2xln_t8z is created
+30/05/2019 00:12:54 DEBUG: variables wrote to tempfile: {}
+30/05/2019 00:12:54 DEBUG: command: terraform destroy -var-file=/var/folders/sc/d8w16dws1gdg0ky02rxdy5n80000gn/T/tmp2xln_t8z -no-color -input=false -auto-approve=true -force

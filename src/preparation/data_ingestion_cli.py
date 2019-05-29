@@ -1,8 +1,10 @@
 import os
 import sys
+import time
 import logging
 import warnings
 import subprocess
+from functools import wraps
 from optparse import OptionParser
 
 import re
@@ -15,8 +17,7 @@ from jinja2 import Template
 from python_terraform import *
 
 warnings.filterwarnings("ignore")
-# TODO: fix system exit
-# TODO: use logger and timer is decorators
+
 # TODO: include more error handlers, rollback & unit tests (pyunit)
 # TODO: Integrate with jenkins
 
@@ -42,7 +43,20 @@ class data_load(object):
                                   self.attributes['username'],
                                   self.attributes['password']))
 
+    def timer(func):
+        """func to time other functions"""
 
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            t1 = time.time()
+            resfunc = func(self, *args, **kwargs)
+            t2 = time.time()-t1
+            logging.info(' {} function was executed in {:.2f}s'.format(func.__name__, t2))
+            return resfunc
+
+        return wrapper
+
+    @timer
     def bash_generator(self):
         """ generates bash script to load csv files in the tables that were created with sql """
 
@@ -54,9 +68,9 @@ class data_load(object):
                             cd {{data_path}}
                             echo "loading to {{prefix}} table . . . "
                             split -a 6 -b 15m {{source_file}} {{prefix}}.part_
-                            mysqlimport --local --use-threads 4 --compress -v --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
-                            rm -r {{prefix}}.part_*
-                        ''') # CHANGED : added show warnings; to list warnings
+                            mysqlimport --local --use-threads 4 --compress --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
+                            rm -r {{prefix}}.part_*;
+                        ''')
             parameters = {'data_path': os.path.dirname(os.path.abspath(raw_path)),
                           'source_file': os.path.basename(raw_path),
                           'prefix': os.path.basename(raw_path).split('.')[0],
@@ -68,6 +82,7 @@ class data_load(object):
             bash.append(bash_split.render(**parameters))
         return ' '.join(i for i in bash)
 
+    @timer
     def sql_generator(self):
         """ generates sql queries to create tables in rds"""
 
@@ -106,6 +121,7 @@ class data_load(object):
             sql.append(query.render(**params))
         return ['\n\n'.join(i for i in sql), '\n\n'.join(i for i in sql_drop)]
 
+    @timer
     def execute_query(self, query):
         """ executes sql queries generated through loop with mysql.connector """
 
@@ -133,11 +149,13 @@ class data_load(object):
                         logging.error(' error executing query. . {}\n'.format(msg))
                         logging.info(' rolling back deployed resources . . . \n')
                         logging.info(tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+                        logging.info(' resources destroyed . . . \n')
                         exit(0)
         except mysql.connector.Error as e:
             logging.error(' error connecting to db: {} . . .'.format(e))
             logging.info(' rolling back deployed resources . . . \n')
             logging.info(tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+            logging.info(' resources destroyed . . . \n')
             exit(0)
         finally:
             if connection.is_connected():
@@ -146,29 +164,37 @@ class data_load(object):
                 connection.close()
                 logging.info(' db connection is closed. . . \n')
 
+    @timer
     def execute_bash(self, bash):
         """executes bash script generated with a loop"""
 
         try:
             bash = '; '.join(i.strip() for i in bash.split('\n') if len(i.strip())>2)
-            p = subprocess.Popen(bash, shell = True, stdout = subprocess.PIPE, bufsize = 1)
-            for i in iter(p.stdout.readline, ''):
-                if i != b'':
-                    logging.info(i.decode('UTF-8'))
-            p.stdout.close()
+            print(bash)
+            p = subprocess.Popen(bash, shell = True, stdout = subprocess.PIPE, bufsize=1)
+            logging.info(p.communicate()[0].decode('UTF-8'))
         except:
             logging.error(' error in executing bash script. . . \n')
             logging.error(' rolling back deployed resources . . . \n')
             logging.info(tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+            logging.info(' resources destroyed . . . \n')
             exit(0)
 
 if __name__ == '__main__':
 
     logging.basicConfig(filename = 'src/preparation/output_load/load_log.log',
                         filemode = 'a',
+                        level = logging.DEBUG,
                         format='%(asctime)s %(levelname)s: %(message)s',
                         datefmt = '%d/%m/%Y %H:%M:%S')
-                        
+
+    def tf_format(output):
+        """formatting output from python_terraform"""
+
+        output = output[1].split('\\n')
+        for i in output:
+            print(i)
+
     # defining options for running python file
     parser = OptionParser(usage = "usage: python data_ingestion.py configfile sqloutput bashoutput", version = "1.0")
     opts, args = parser.parse_args()
@@ -183,13 +209,6 @@ if __name__ == '__main__':
     except:
         logging.error(' one of the configuration parameters is not defined properly, most likely .tfstate is not populated yet. . . \n')
         exit(0)
-
-    def tf_format(output):
-        """formatting output from python_terraform"""
-
-        output = output[1].split('\\n')
-        for i in output:
-            print(i)
 
     # generating sql and bash statements
     bash = generator.bash_generator()
