@@ -18,6 +18,7 @@ from python_terraform import *
 
 warnings.filterwarnings("ignore")
 
+# TODO: update the config.yaml file with other variables
 # TODO: include more error handlers, rollback & unit tests (pyunit)
 # TODO: Integrate with jenkins
 
@@ -69,7 +70,7 @@ class data_load(object):
                             echo "loading to {{prefix}} table . . . "
                             split -a 6 -b 15m {{source_file}} {{prefix}}.part_
                             mysqlimport --local --use-threads 4 --compress --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
-                            rm -r {{prefix}}.part_*;
+                            rm -r {{prefix}}.part_*
                         ''')
             parameters = {'data_path': os.path.dirname(os.path.abspath(raw_path)),
                           'source_file': os.path.basename(raw_path),
@@ -170,7 +171,6 @@ class data_load(object):
 
         try:
             bash = '; '.join(i.strip() for i in bash.split('\n') if len(i.strip())>2)
-            print(bash)
             p = subprocess.Popen(bash, shell = True, stdout = subprocess.PIPE, bufsize=1)
             logging.info(p.communicate()[0].decode('UTF-8'))
         except:
