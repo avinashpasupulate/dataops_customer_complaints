@@ -1,8 +1,8 @@
 
                     -- parameterized script generated with python
-                    -- create table to load b_ownership data
-                    drop table if exists opencmsdb.b_ownership;
-                    create table if not exists opencmsdb.b_ownership (					
+                    -- create table to load ownership data
+                    drop table if exists opencmsdb.ownership;
+                    create table if not exists opencmsdb.ownership (					
                     change_type text, 
 					physician_profile_id text, 
 					physician_first_name text, 
@@ -32,5 +32,17 @@
 					dispute_status_for_publication text, 
 					interest_held_by_physician_or_an_immediate_family_member text, 
 					payment_publication_date text
+                     					);
+            
+
+
+                    -- parameterized script generated with python
+                    -- create table to load deleted data
+                    drop table if exists opencmsdb.deleted;
+                    create table if not exists opencmsdb.deleted (					
+                    change_type text, 
+					program_year text, 
+					payment_type text, 
+					record_id text
                      					);
             

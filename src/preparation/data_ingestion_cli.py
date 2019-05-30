@@ -18,31 +18,26 @@ from python_terraform import *
 
 warnings.filterwarnings("ignore")
 
-# TODO: update the config.yaml file with other variables
-# TODO: include more error handlers, rollback & unit tests (pyunit)
+# TODO: check & fix warnings in mysqlimport - use load data infile
+# TODO: include more error handlers, rollback & *unit tests (pyunit)*
 # TODO: Integrate with jenkins
 
-class data_load(object):
+class logger():
+    """formatting logging"""
 
+    # parameters for logging
+    logging.basicConfig(filename = 'src/preparation/output_load/load_log.log',
+                        filemode = 'a',
+                        level = logging.DEBUG,
+                        format='%(asctime)s %(levelname)s: %(message)s',
+                        datefmt = '%d/%m/%Y %H:%M:%S')
 
-    def __init__(self, params):
-        """ initializing parameters """
+    def tf_format(output):
+        """formatting output from python_terraform"""
 
-        # python-terraform parameters
-        self.terf = Terraform(working_dir = 'tf/dev')
-        self.approve = {"auto_approve": True}
-
-        self.params = params
-        # getting rds details from tfstate file created after launch
-        self.conninfo = []
-        self.rollback = 'sh pipeline/destroy_infra.sh' # CHANGED: remove if python-terraform succeeds
-        with open(self.params['rds_attributes']['tf_path'], 'r') as f:
-            tfstate = json.loads(f.read())
-            self.attributes = tfstate['modules'][0]['resources']['aws_db_instance.default']['primary']['attributes']
-            self.conninfo.extend((self.attributes['address'],
-                                  self.attributes['name'],
-                                  self.attributes['username'],
-                                  self.attributes['password']))
+        output = output[1].split('\\n')
+        for i in output:
+            print(i)
 
     def timer(func):
         """func to time other functions"""
@@ -57,7 +52,30 @@ class data_load(object):
 
         return wrapper
 
-    @timer
+
+
+class data_load(object):
+    """query generation and data loading"""
+
+    def __init__(self, params):
+        """ initializing parameters """
+
+        # python-terraform parameters
+        self.terf = Terraform(working_dir = 'tf/dev')
+        self.approve = {"auto_approve": True}
+
+        self.params = params
+        # getting rds details from tfstate file created after launch
+        self.conninfo = []
+        with open(self.params['rds_attributes']['tf_path'], 'r') as f:
+            tfstate = json.loads(f.read())
+            self.attributes = tfstate['modules'][0]['resources']['aws_db_instance.default']['primary']['attributes']
+            self.conninfo.extend((self.attributes['address'],
+                                  self.attributes['name'],
+                                  self.attributes['username'],
+                                  self.attributes['password']))
+
+    @logger.timer
     def bash_generator(self):
         """ generates bash script to load csv files in the tables that were created with sql """
 
@@ -69,7 +87,7 @@ class data_load(object):
                             cd {{data_path}}
                             echo "loading to {{prefix}} table . . . "
                             split -a 6 -b 15m {{source_file}} {{prefix}}.part_
-                            mysqlimport --local --use-threads 4 --compress --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
+\                           mysqlimport --local --use-threads 4 --compress --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --fields-terminated-by=',' --fields-enclosed-by='"' --lines-terminated-by='\\n' {{dbname}} {{prefix}}.part_*
                             rm -r {{prefix}}.part_*
                         ''')
             parameters = {'data_path': os.path.dirname(os.path.abspath(raw_path)),
@@ -83,7 +101,7 @@ class data_load(object):
             bash.append(bash_split.render(**parameters))
         return ' '.join(i for i in bash)
 
-    @timer
+    @logger.timer
     def sql_generator(self):
         """ generates sql queries to create tables in rds"""
 
@@ -122,7 +140,7 @@ class data_load(object):
             sql.append(query.render(**params))
         return ['\n\n'.join(i for i in sql), '\n\n'.join(i for i in sql_drop)]
 
-    @timer
+    @logger.timer
     def execute_query(self, query):
         """ executes sql queries generated through loop with mysql.connector """
 
@@ -147,25 +165,25 @@ class data_load(object):
                             print(command)
                             print('*'*30,'completed','*'*30,'\n')
                     except IOError as msg:
-                        logging.error(' error executing query. . {}\n'.format(msg))
-                        logging.info(' rolling back deployed resources . . . \n')
-                        logging.info(tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
-                        logging.info(' resources destroyed . . . \n')
+                        logging.error(' error executing query. . {}'.format(msg))
+                        logging.info(' rolling back deployed resources . . . ')
+                        logging.info(logger.tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+                        logging.info(' resources destroyed . . . ')
                         exit(0)
         except mysql.connector.Error as e:
             logging.error(' error connecting to db: {} . . .'.format(e))
-            logging.info(' rolling back deployed resources . . . \n')
-            logging.info(tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
-            logging.info(' resources destroyed . . . \n')
+            logging.info(' rolling back deployed resources . . . ')
+            logging.info(logger.tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+            logging.info(' resources destroyed . . . ')
             exit(0)
         finally:
             if connection.is_connected():
                 cursor.close()
                 connection.commit()
                 connection.close()
-                logging.info(' db connection is closed. . . \n')
+                logging.info(' db connection is closed. . . ')
 
-    @timer
+    @logger.timer
     def execute_bash(self, bash):
         """executes bash script generated with a loop"""
 
@@ -174,32 +192,20 @@ class data_load(object):
             p = subprocess.Popen(bash, shell = True, stdout = subprocess.PIPE, bufsize=1)
             logging.info(p.communicate()[0].decode('UTF-8'))
         except:
-            logging.error(' error in executing bash script. . . \n')
-            logging.error(' rolling back deployed resources . . . \n')
-            logging.info(tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
-            logging.info(' resources destroyed . . . \n')
+            logging.error(' error in executing bash script. . . ')
+            logging.error(' rolling back deployed resources . . . ')
+            logging.info(logger.tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True)))
+            logging.info(' resources destroyed . . . ')
             exit(0)
 
 if __name__ == '__main__':
 
-    logging.basicConfig(filename = 'src/preparation/output_load/load_log.log',
-                        filemode = 'a',
-                        level = logging.DEBUG,
-                        format='%(asctime)s %(levelname)s: %(message)s',
-                        datefmt = '%d/%m/%Y %H:%M:%S')
-
-    def tf_format(output):
-        """formatting output from python_terraform"""
-
-        output = output[1].split('\\n')
-        for i in output:
-            print(i)
-
+    logger()
     # defining options for running python file
     parser = OptionParser(usage = "usage: python data_ingestion.py configfile sqloutput bashoutput", version = "1.0")
     opts, args = parser.parse_args()
     if len(args)<2:
-        logging.error(' either config and/or output file is missing . . .\n')
+        logging.error(' either config and/or output file is missing . . .')
         exit(0)
 
     # fetching parameters from config file
@@ -207,7 +213,7 @@ if __name__ == '__main__':
     try:
         generator = data_load(config)
     except:
-        logging.error(' one of the configuration parameters is not defined properly, most likely .tfstate is not populated yet. . . \n')
+        logging.error(' one of the configuration parameters is not defined properly, most likely .tfstate is not populated yet. . . ')
         exit(0)
 
     # generating sql and bash statements
@@ -222,13 +228,13 @@ if __name__ == '__main__':
         f.write(query[0])
 
     # creating tables and loading data
-    logging.info(' creating tables. . . . . \n')
+    logging.info(' creating tables. . . . . ')
     generator.execute_query(query[0])
 
-    logging.info(' loading data to tables. . . . \n')
+    logging.info(' loading data to tables. . . . ')
     generator.execute_bash(bash)
 
-    logging.info(' dropping headers. . . .\n')
+    logging.info(' dropping headers. . . .')
     generator.execute_query(query[1])
 
-    logging.info(' completed loading data to rds. . . .\n')
+    logging.info(' completed loading data to rds. . . .')
