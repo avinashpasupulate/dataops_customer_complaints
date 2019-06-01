@@ -1,6 +1,5 @@
 
 #  csv raw data
-data/*
 *.csv
 *.zip
 .aws/*

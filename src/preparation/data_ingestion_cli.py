@@ -29,7 +29,7 @@ class logger():
     logging.basicConfig(filename = 'src/preparation/output_load/load_log.log',
                         filemode = 'a',
                         level = logging.DEBUG,
-                        format='%(asctime)s %(levelname)s: %(message)s',
+                        format = '%(asctime)s %(levelname)s: %(message)s',
                         datefmt = '%d/%m/%Y %H:%M:%S')
 
     def tf_format(output):
@@ -111,9 +111,8 @@ class data_load(object):
         for raw_path in files:
             files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 10)
             # creating list of columns to include in ddl statement
-            # TODO: currently using text data type, must be specific
             # truncate length of column names to less than 64 characters (max accepted by mysql)
-            cols = ', \n\t\t\t\t\t'.join(i for i in [x.lower().replace(' ', '_')[0:62] + ' text' for x in list(files.columns)])
+            cols = ', \n\t\t\t\t\t'.join(i for i in [x.lower().replace(' ', '_')[0:62] + ' text DEFAULT NULL' for x in list(files.columns)])
             table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
             query = Template('''
                     -- parameterized script generated with python
