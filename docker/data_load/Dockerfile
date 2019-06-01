@@ -25,7 +25,7 @@ ENTRYPOINT conda install -y pip \
            pip install awscli --upgrade \
                        mysql-connector-python \
                        python-terraform==0.10.0 && \
-           mkdir data && mkdir data/raw && mkdir data/raw/pgyr17_p011819 && \
+           mkdir data/raw/pgyr17_p011819 && \
            aws s3 cp s3://dataops-opencms/pgyr17_p011819.zip data/raw/ && \
            unzip data/raw/pgyr17_p011819.zip -d data/raw/pgyr17_p011819/ && \
            ls data/raw/pgyr17_p011819/ && \
