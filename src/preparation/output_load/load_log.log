@@ -1,13 +1,190 @@
-30/05/2019 23:24:14 DEBUG: read data from tf/dev/terraform.tfstate
-30/05/2019 23:24:14 INFO:  bash_generator function was executed in 0.03s
-30/05/2019 23:24:14 INFO:  sql_generator function was executed in 0.08s
-30/05/2019 23:24:14 INFO:  creating tables. . . . . 
-30/05/2019 23:24:32 INFO:  connected to mysql server version: 5.7.22
-30/05/2019 23:24:37 INFO:  db connection is closed. . . 
-30/05/2019 23:24:37 INFO:  execute_query function was executed in 22.98s
-30/05/2019 23:24:37 INFO:  loading data to tables. . . . 
-30/05/2019 23:24:37 ERROR:  error in executing bash script. . . 
-30/05/2019 23:24:37 ERROR:  rolling back deployed resources . . . 
-30/05/2019 23:24:37 DEBUG: /var/folders/sc/d8w16dws1gdg0ky02rxdy5n80000gn/T/tmp0vpn5k2l is created
-30/05/2019 23:24:37 DEBUG: variables wrote to tempfile: {}
-30/05/2019 23:24:37 DEBUG: command: terraform destroy -var-file=/var/folders/sc/d8w16dws1gdg0ky02rxdy5n80000gn/T/tmp0vpn5k2l -no-color -input=false -auto-approve=true -force
+01/06/2019 17:08:57 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 17:08:57 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 17:08:57 INFO:  sql_generator function was executed in 0.02s
+01/06/2019 17:08:57 INFO:  creating tables. . . . . 
+01/06/2019 17:09:08 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:09:11 INFO:  db connection is closed. . . 
+01/06/2019 17:09:11 INFO:  execute_query function was executed in 13.47s
+01/06/2019 17:09:11 INFO:  loading data to tables. . . . 
+01/06/2019 17:09:24 INFO: loading to ownership table . . . 
+loading 
+
+01/06/2019 17:09:24 INFO:  execute_bash function was executed in 13.51s
+01/06/2019 17:09:24 INFO:  dropping headers. . . .
+01/06/2019 17:09:34 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:09:35 INFO:  db connection is closed. . . 
+01/06/2019 17:09:35 INFO:  execute_query function was executed in 11.37s
+01/06/2019 17:09:35 INFO:  completed loading data to rds. . . .
+01/06/2019 17:11:16 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 17:11:16 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 17:11:16 INFO:  sql_generator function was executed in 0.02s
+01/06/2019 17:11:16 INFO:  creating tables. . . . . 
+01/06/2019 17:11:21 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:11:24 INFO:  db connection is closed. . . 
+01/06/2019 17:11:24 INFO:  execute_query function was executed in 7.82s
+01/06/2019 17:11:24 INFO:  loading data to tables. . . . 
+01/06/2019 17:11:29 INFO: loading to ownership table . . . 
+loading 
+
+01/06/2019 17:11:29 INFO:  execute_bash function was executed in 5.51s
+01/06/2019 17:11:29 INFO:  dropping headers. . . .
+01/06/2019 17:11:34 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:11:36 INFO:  db connection is closed. . . 
+01/06/2019 17:11:36 INFO:  execute_query function was executed in 6.77s
+01/06/2019 17:11:36 INFO:  completed loading data to rds. . . .
+01/06/2019 17:25:16 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 17:25:16 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 17:25:16 INFO:  sql_generator function was executed in 0.02s
+01/06/2019 17:25:16 INFO:  creating tables. . . . . 
+01/06/2019 17:25:28 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:25:30 INFO:  db connection is closed. . . 
+01/06/2019 17:25:30 INFO:  execute_query function was executed in 14.76s
+01/06/2019 17:25:30 INFO:  loading data to tables. . . . 
+01/06/2019 17:25:47 INFO: loading to ownership table . . . 
+loading 
+
+01/06/2019 17:25:47 INFO:  execute_bash function was executed in 16.44s
+01/06/2019 17:25:47 INFO:  dropping headers. . . .
+01/06/2019 17:25:53 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:25:55 INFO:  db connection is closed. . . 
+01/06/2019 17:25:55 INFO:  execute_query function was executed in 7.93s
+01/06/2019 17:25:55 INFO:  completed loading data to rds. . . .
+01/06/2019 17:27:04 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 17:27:04 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 17:27:04 INFO:  sql_generator function was executed in 0.01s
+01/06/2019 17:27:04 INFO:  creating tables. . . . . 
+01/06/2019 17:27:12 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:27:14 INFO:  db connection is closed. . . 
+01/06/2019 17:27:14 INFO:  execute_query function was executed in 9.85s
+01/06/2019 17:27:14 INFO:  loading data to tables. . . . 
+01/06/2019 17:27:29 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+
+01/06/2019 17:27:29 INFO:  execute_bash function was executed in 14.69s
+01/06/2019 17:27:29 INFO:  dropping headers. . . .
+01/06/2019 17:27:35 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:27:37 INFO:  db connection is closed. . . 
+01/06/2019 17:27:37 INFO:  execute_query function was executed in 8.18s
+01/06/2019 17:27:37 INFO:  completed loading data to rds. . . .
+01/06/2019 17:43:32 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 17:43:32 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 17:43:32 INFO:  sql_generator function was executed in 0.02s
+01/06/2019 17:43:32 INFO:  creating tables. . . . . 
+01/06/2019 17:43:45 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:43:47 INFO:  db connection is closed. . . 
+01/06/2019 17:43:47 INFO:  execute_query function was executed in 15.02s
+01/06/2019 17:43:47 INFO:  loading data to tables. . . . 
+01/06/2019 17:44:04 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+
+01/06/2019 17:44:04 INFO:  execute_bash function was executed in 16.68s
+01/06/2019 17:44:04 INFO:  dropping headers. . . .
+01/06/2019 17:44:13 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:44:14 INFO:  db connection is closed. . . 
+01/06/2019 17:44:14 INFO:  execute_query function was executed in 10.55s
+01/06/2019 17:44:14 INFO:  completed loading data to rds. . . .
+01/06/2019 17:47:57 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 17:47:57 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 17:47:57 INFO:  sql_generator function was executed in 0.01s
+01/06/2019 17:47:57 INFO:  creating tables. . . . . 
+01/06/2019 17:48:05 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:48:08 INFO:  db connection is closed. . . 
+01/06/2019 17:48:08 INFO:  execute_query function was executed in 10.50s
+01/06/2019 17:48:08 INFO:  loading data to tables. . . . 
+01/06/2019 17:48:32 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+
+01/06/2019 17:48:32 INFO:  execute_bash function was executed in 24.79s
+01/06/2019 17:48:32 INFO:  dropping headers. . . .
+01/06/2019 17:48:36 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:48:37 INFO:  db connection is closed. . . 
+01/06/2019 17:48:37 INFO:  execute_query function was executed in 4.80s
+01/06/2019 17:48:37 INFO:  completed loading data to rds. . . .
+01/06/2019 17:55:20 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 17:55:20 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 17:55:20 INFO:  sql_generator function was executed in 0.01s
+01/06/2019 17:55:20 INFO:  creating tables. . . . . 
+01/06/2019 17:55:26 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:55:29 INFO:  db connection is closed. . . 
+01/06/2019 17:55:29 INFO:  execute_query function was executed in 9.14s
+01/06/2019 17:55:29 INFO:  loading data to tables. . . . 
+01/06/2019 17:55:36 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+
+01/06/2019 17:55:36 INFO:  execute_bash function was executed in 6.83s
+01/06/2019 17:55:36 INFO:  dropping headers. . . .
+01/06/2019 17:55:41 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 17:55:43 INFO:  db connection is closed. . . 
+01/06/2019 17:55:43 INFO:  execute_query function was executed in 6.89s
+01/06/2019 17:55:43 INFO:  completed loading data to rds. . . .
+01/06/2019 18:00:33 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 18:00:33 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 18:00:33 INFO:  sql_generator function was executed in 0.02s
+01/06/2019 18:00:33 INFO:  creating tables. . . . . 
+01/06/2019 18:00:46 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:00:49 INFO:  db connection is closed. . . 
+01/06/2019 18:00:49 INFO:  execute_query function was executed in 15.68s
+01/06/2019 18:00:49 INFO:  loading data to tables. . . . 
+01/06/2019 18:01:02 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+
+01/06/2019 18:01:02 INFO:  execute_bash function was executed in 13.00s
+01/06/2019 18:01:02 INFO:  dropping headers. . . .
+01/06/2019 18:01:10 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:01:12 INFO:  db connection is closed. . . 
+01/06/2019 18:01:12 INFO:  execute_query function was executed in 10.12s
+01/06/2019 18:01:12 INFO:  completed loading data to rds. . . .
+01/06/2019 18:04:39 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 18:04:39 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 18:04:39 INFO:  sql_generator function was executed in 0.02s
+01/06/2019 18:04:39 INFO:  creating tables. . . . . 
+01/06/2019 18:04:44 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:04:46 INFO:  db connection is closed. . . 
+01/06/2019 18:04:46 INFO:  execute_query function was executed in 6.77s
+01/06/2019 18:04:46 INFO:  loading data to tables. . . . 
+01/06/2019 18:04:55 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+
+01/06/2019 18:04:55 INFO:  execute_bash function was executed in 9.69s
+01/06/2019 18:04:55 INFO:  dropping headers. . . .
+01/06/2019 18:05:00 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:05:03 INFO:  db connection is closed. . . 
+01/06/2019 18:05:03 INFO:  execute_query function was executed in 7.20s
+01/06/2019 18:05:03 INFO:  completed loading data to rds. . . .
+01/06/2019 18:05:21 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 18:05:21 INFO:  bash_generator function was executed in 0.02s
+01/06/2019 18:05:21 INFO:  sql_generator function was executed in 0.02s
+01/06/2019 18:05:21 INFO:  creating tables. . . . . 
+01/06/2019 18:05:25 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:05:27 INFO:  db connection is closed. . . 
+01/06/2019 18:05:27 INFO:  execute_query function was executed in 6.26s
+01/06/2019 18:05:27 INFO:  loading data to tables. . . . 
+01/06/2019 18:05:33 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+
+01/06/2019 18:05:33 INFO:  execute_bash function was executed in 6.23s
+01/06/2019 18:05:33 INFO:  dropping headers. . . .
+01/06/2019 18:05:38 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:05:40 INFO:  db connection is closed. . . 
+01/06/2019 18:05:40 INFO:  execute_query function was executed in 6.38s
+01/06/2019 18:05:40 INFO:  completed loading data to rds. . . .
+01/06/2019 18:05:56 DEBUG: read data from tf/dev/terraform.tfstate
+01/06/2019 18:05:56 INFO:  bash_generator function was executed in 0.01s
+01/06/2019 18:05:56 INFO:  sql_generator function was executed in 0.01s
+01/06/2019 18:05:56 INFO:  creating tables. . . . . 
+01/06/2019 18:06:05 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:06:07 INFO:  db connection is closed. . . 
+01/06/2019 18:06:07 INFO:  execute_query function was executed in 11.52s
+01/06/2019 18:06:07 INFO:  loading data to tables. . . . 
+01/06/2019 18:08:22 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+loading to deleted table . . . 
+loading deleted.part_aaaaaa
+loading deleted.part_aaaaab
+
+01/06/2019 18:08:22 INFO:  execute_bash function was executed in 135.05s
+01/06/2019 18:08:22 INFO:  dropping headers. . . .
+01/06/2019 18:08:27 INFO:  connected to mysql server version: 5.7.22
+01/06/2019 18:08:28 INFO:  db connection is closed. . . 
+01/06/2019 18:08:28 INFO:  execute_query function was executed in 5.83s
+01/06/2019 18:08:28 INFO:  completed loading data to rds. . . .
