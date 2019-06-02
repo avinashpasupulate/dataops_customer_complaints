@@ -21,7 +21,8 @@ ENTRYPOINT conda install -y pip \
                             pandas==0.23.4 \
                             mysql==5.7.22 \
                             jinja2==2.10 \
-                            yaml==0.1.7 && \
+                            yaml==0.1.7 \
+                            pytest && \
            pip install awscli --upgrade \
                        mysql-connector-python \
                        python-terraform==0.10.0 && \
@@ -31,6 +32,5 @@ ENTRYPOINT conda install -y pip \
            ls data/raw/pgyr17_p011819/ && \
            sh pipeline/create_infra.sh && \
            aws s3 cp tf/dev/terraform.tfstate s3://dataops-opencms/terraform.tfstate && \
-           ls data/raw/ && \
            sh pipeline/data_ingestion.sh && \
            aws s3 cp src/preparation/output_load s3://dataops-opencms/output_load --recursive

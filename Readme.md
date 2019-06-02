@@ -4,6 +4,12 @@ author: avinash.pasupulate@gmail.com
 
 05/05/2019 00:03:54
 
+**Link To Trello Board**
+
+https://trello.com/b/kTzXgAQR/dataopsopencmsdata
+
+Some of the tasks can be done in a much simpler way using services.
+But most of the tasks performed in this project are to learn & simultaneously minimise costs 
 
 **Status:**
 In progress. . . .

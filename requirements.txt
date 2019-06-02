@@ -11,3 +11,4 @@ mysql==5.7.22
 jinja2==2.10
 optparse
 python-terraform==0.10.0
+pytest

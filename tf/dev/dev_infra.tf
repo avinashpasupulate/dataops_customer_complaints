@@ -76,6 +76,11 @@ resource "aws_db_parameter_group" "default" {
         }
 
         parameter {
+                  name = "sql_mode"
+                  value = "NO_ENGINE_SUBSTITUTION"
+        }
+
+        parameter {
                   name = "max_allowed_packet"
                   value = 512000000
         }

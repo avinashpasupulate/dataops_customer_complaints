@@ -18,6 +18,7 @@ from python_terraform import *
 
 warnings.filterwarnings("ignore")
 
+# TODO: solve warnings caused by empty entries in file check sql_mode
 # TODO: detect datatype and use for mysql table creation
 # TODO: include more error handlers, rollback & *unit tests (pyunit)*
 # TODO: Integrate with jenkins
@@ -82,7 +83,6 @@ class data_load(object):
         bash = []
         files = glob.glob('data/raw/*/*.csv')
         for raw_path in files:
-            files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 2)
             bash_split = Template('''
                             cd {{data_path}}
                             echo "loading to {{prefix}} table . . . "
@@ -160,7 +160,7 @@ class data_load(object):
                 for command in query.split(';'):
                     try:
                         if len(command.strip())>2:
-                            cursor.execute(command+';')
+                            res = cursor.execute(command+';')
                             print(command)
                             print('*'*30,'completed','*'*30,'\n')
                     except IOError as msg:
