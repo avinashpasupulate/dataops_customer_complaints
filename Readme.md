@@ -1,3 +1,5 @@
+** CHECK BETA BRANCH FOR FILES **
+
 Data Analytics/Processing Project
 
 author: avinash.pasupulate@gmail.com
@@ -9,7 +11,7 @@ author: avinash.pasupulate@gmail.com
 https://trello.com/b/kTzXgAQR/dataopsopencmsdata
 
 Some of the tasks can be done in a much simpler way using services.
-But most of the tasks performed in this project are to learn & simultaneously minimise costs 
+But most of the tasks performed in this project are to learn & simultaneously minimise costs
 
 **Status:**
 In progress. . . .
