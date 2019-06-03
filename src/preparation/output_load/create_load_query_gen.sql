@@ -34,3 +34,15 @@
 					payment_publication_date text DEFAULT NULL
                      					);
             
+
+
+                    -- parameterized script generated with python
+                    -- create table to load deleted data
+                    drop table if exists opencmsdb.deleted;
+                    create table if not exists opencmsdb.deleted (					
+                    change_type text DEFAULT NULL, 
+					program_year text DEFAULT NULL, 
+					payment_type text DEFAULT NULL, 
+					record_id text DEFAULT NULL
+                     					);
+            

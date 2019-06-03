@@ -1,7 +1,7 @@
 # config file to load data to rds
 # not required may be removed
 info:
-    base_path: 
+    base_path:
 
 rds_attributes:
     tf_path: tf/dev/terraform.tfstate

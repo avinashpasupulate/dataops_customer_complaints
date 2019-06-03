@@ -33,7 +33,7 @@ class logger():
                         format = '%(asctime)s %(levelname)s: %(message)s',
                         datefmt = '%d/%m/%Y %H:%M:%S')
 
-    def tf_format(output):
+    def _tf_format(output):
         """formatting output from python_terraform"""
 
         output = output[1].split('\\n')
@@ -54,7 +54,6 @@ class logger():
         return wrapper
 
 
-
 class data_load(object):
     """query generation and data loading"""
 
@@ -64,7 +63,7 @@ class data_load(object):
         # python-terraform parameters
         self.terf = Terraform(working_dir = 'tf/dev')
         self.approve = {"auto_approve": True}
-
+        self.files = glob.glob('data/raw/*/*.csv')
         self.params = params
         # getting rds details from tfstate file created after launch
         self.conninfo = []
@@ -81,8 +80,7 @@ class data_load(object):
         """ generates bash script to load csv files in the tables that were created with sql """
 
         bash = []
-        files = glob.glob('data/raw/*/*.csv')
-        for raw_path in files:
+        for raw_path in self.files:
             bash_split = Template('''
                             cd {{data_path}}
                             echo "loading to {{prefix}} table . . . "
@@ -107,12 +105,11 @@ class data_load(object):
 
         sql = []
         sql_drop = []
-        files = glob.glob('data/raw/*/*.csv')
-        for raw_path in files:
-            files = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 10)
+        for raw_path in self.files:
+            csv_df = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 10)
             # creating list of columns to include in ddl statement
             # truncate length of column names to less than 64 characters (max accepted by mysql)
-            cols = ', \n\t\t\t\t\t'.join(i for i in [x.lower().replace(' ', '_')[0:62] + ' text DEFAULT NULL' for x in list(files.columns)])
+            cols = ', \n\t\t\t\t\t'.join(i for i in [x.lower().replace(' ', '_')[0:62] + ' text DEFAULT NULL' for x in list(csv_df.columns)])
             table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
             query = Template('''
                     -- parameterized script generated with python
@@ -145,15 +142,15 @@ class data_load(object):
 
         try:
             # connecting to mysql rds instance
-            connection = mysql.connector.connect(host = self.conninfo[0],
-                                                 user = self.conninfo[2],
-                                                 passwd = self.conninfo[3],
-                                                 database = self.conninfo[1])
+            self.connection = mysql.connector.connect(host = self.conninfo[0],
+                                                      user = self.conninfo[2],
+                                                      passwd = self.conninfo[3],
+                                                      database = self.conninfo[1])
             # executes query generated in the sql_generator function
-            if connection.is_connected():
-                dbinfo = connection.get_server_info()
+            if self.connection.is_connected():
+                dbinfo = self.connection.get_server_info()
                 logging.info(' connected to mysql server version: {}'.format(dbinfo))
-                cursor = connection.cursor()
+                cursor = self.connection.cursor()
                 # setting max execution time, max_packet_size to prevent timeouts when loading large files
 
                 # mysql connector cannot execute a sql script
@@ -166,20 +163,21 @@ class data_load(object):
                     except IOError as msg:
                         logging.error(' error executing query. . {}'.format(msg))
                         logging.info(' rolling back deployed resources . . . ')
-                        logging.info(logger.tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+                        logging.info(logger._tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
                         logging.info(' resources destroyed . . . ')
                         exit(0)
+
         except mysql.connector.Error as e:
             logging.error(' error connecting to db: {} . . .'.format(e))
             logging.info(' rolling back deployed resources . . . ')
-            logging.info(logger.tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+            logging.info(logger._tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
             logging.info(' resources destroyed . . . ')
             exit(0)
         finally:
-            if connection.is_connected():
+            if self.connection.is_connected():
                 cursor.close()
-                connection.commit()
-                connection.close()
+                self.connection.commit()
+                #self.connection.close()
                 logging.info(' db connection is closed. . . ')
 
     @logger.timer
@@ -194,9 +192,26 @@ class data_load(object):
         except:
             logging.error(' error in executing bash script. . . ')
             logging.error(' rolling back deployed resources . . . ')
-            logging.info(logger.tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True)))
+            logging.info(logger._tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True)))
             logging.info(' resources destroyed . . . ')
             exit(0)
+
+    def len_db_tables(self):
+        table_len = dict()
+        for raw_path in self.files:
+            cur = self.connection.cursor()
+            len_q = Template('''select count(*) from {{dbname}}.{{tablename}}''')
+            params = {'dbname': self.attributes['name'], 'tablename': os.path.basename(raw_path).split('.')[0]}
+            cur.execute(len_q.render(**params))
+            table_len[os.path.basename(raw_path).split('.')[0]] = cur.fetchall()[0][0]
+        return table_len
+
+    def len_df_tables(self):
+        df_len = dict()
+        for raw_path in self.files:
+            df = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object)
+            df_len[os.path.basename(raw_path).split('.')[0]] = len(df)
+        return df_len
 
 if __name__ == '__main__':
 
@@ -236,5 +251,8 @@ if __name__ == '__main__':
 
     logging.info(' dropping headers. . . .')
     generator.execute_query(query[1])
+
+    print(generator.len_db_tables()) # for unit tests
+    print(generator.len_df_tables()) # for unit tests
 
     logging.info(' completed loading data to rds. . . .')
