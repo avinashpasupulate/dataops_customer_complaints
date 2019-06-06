@@ -1,3 +1,13 @@
+"""
+Load data to DB.
+
+Launch database instance,
+Load csv files to database,
+Run simple unit tests on the db
+
+avinash.pasupulate@gmail.com
+"""
+
 import os
 import sys
 import time
@@ -7,46 +17,50 @@ import subprocess
 from functools import wraps
 from optparse import OptionParser
 
-import re
 import glob
 import json
 import yaml
+import pytest
+import pickle
 import pandas as pd
 import mysql.connector
 from jinja2 import Template
 from python_terraform import *
 
+sys.path.append('test/')
 warnings.filterwarnings("ignore")
+
+# from test_load import unit_test
+
 
 # TODO: solve warnings caused by empty entries in file check sql_mode
 # TODO: detect datatype and use for mysql table creation
 # TODO: include more error handlers, rollback & *unit tests (pyunit)*
 # TODO: Integrate with jenkins
 
+
 class logger():
-    """formatting logging"""
+    """Format logs."""
 
     # parameters for logging
-    logging.basicConfig(filename = 'src/preparation/output_load/load_log.log',
-                        filemode = 'a',
-                        level = logging.DEBUG,
-                        format = '%(asctime)s %(levelname)s: %(message)s',
-                        datefmt = '%d/%m/%Y %H:%M:%S')
+    logging.basicConfig(filename='src/preparation/output_load/load_log.log',
+                        filemode='a',
+                        level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s: %(message)s',
+                        datefmt='%d/%m/%Y %H:%M:%S')
 
     def _tf_format(output):
-        """formatting output from python_terraform"""
-
+        """Format output from python_terraform."""
         output = output[1].split('\\n')
         for i in output:
             print(i)
 
     def timer(func):
-        """func to time other functions"""
-
+        """Func to time other functions."""
         @wraps(func)
-        def wrapper(self, *args, **kwargs):
+        def wrapper(*args, **kwargs):
             t1 = time.time()
-            resfunc = func(self, *args, **kwargs)
+            resfunc = func(*args, **kwargs)
             t2 = time.time()-t1
             logging.info(' {} function was executed in {:.2f}s'.format(func.__name__, t2))
             return resfunc
@@ -54,14 +68,45 @@ class logger():
         return wrapper
 
 
+class testing(object):
+    """Generate metrics for testing."""
+
+    def __init__(self, object):
+        """Initialize variables from data_load class."""
+        self.files = object.files
+        self.connection = object.connection
+        self.attributes = object.attributes
+
+    def len_db_tables(self):
+        """Get length of mysql tables for test."""
+        table_len = dict()
+        for raw_path in self.files:
+            cur = self.connection.cursor()
+            len_q = Template('''select count(*) from {{dbname}}.{{tablename}}''')
+            params = {'dbname': self.attributes['name'], 'tablename':
+                      os.path.basename(raw_path).split('.')[0]
+                      }
+            cur.execute(len_q.render(**params))
+            table_len[os.path.basename(raw_path).split('.')[0]] = cur.fetchall()[0][0]
+        return table_len
+
+    def len_df_tables(self):
+        """Get length of csv for test."""
+        df_len = dict()
+        for raw_path in self.files:
+            df = pd.read_csv(raw_path, sep=',', error_bad_lines=False,
+                             dtype=object)
+            df_len[os.path.basename(raw_path).split('.')[0]] = len(df)
+        return df_len
+
+
 class data_load(object):
-    """query generation and data loading"""
+    """Query generation and data loading."""
 
     def __init__(self, params):
-        """ initializing parameters """
-
+        """Initialize parameters."""
         # python-terraform parameters
-        self.terf = Terraform(working_dir = 'tf/dev')
+        self.terf = Terraform(working_dir='tf/dev')
         self.approve = {"auto_approve": True}
         self.files = glob.glob('data/raw/*/*.csv')
         self.params = params
@@ -77,8 +122,7 @@ class data_load(object):
 
     @logger.timer
     def bash_generator(self):
-        """ generates bash script to load csv files in the tables that were created with sql """
-
+        """Generate bash script to load csv files in the tables that were created with sql."""
         bash = []
         for raw_path in self.files:
             bash_split = Template('''
@@ -95,22 +139,21 @@ class data_load(object):
                           'host': self.attributes['address'],
                           'user': self.attributes['username'],
                           'pwd': self.attributes['password']
-                         }
+                          }
             bash.append(bash_split.render(**parameters))
         return ' '.join(i for i in bash)
 
     @logger.timer
     def sql_generator(self):
-        """ generates sql queries to create tables in rds"""
-
+        """Generate sql queries to create tables in rds."""
         sql = []
         sql_drop = []
         for raw_path in self.files:
-            csv_df = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object, nrows = 10)
+            csv_df = pd.read_csv(raw_path, sep=',', error_bad_lines=False, dtype=object, nrows=10)
             # creating list of columns to include in ddl statement
             # truncate length of column names to less than 64 characters (max accepted by mysql)
             cols = ', \n\t\t\t\t\t'.join(i for i in [x.lower().replace(' ', '_')[0:62] + ' text DEFAULT NULL' for x in list(csv_df.columns)])
-            table_name = os.path.basename(raw_path).split('.')[0] # filename used as table name
+            table_name = os.path.basename(raw_path).split('.')[0]  # filename used as table name
             query = Template('''
                     -- parameterized script generated with python
                     -- create table to load {{table_name}} data
@@ -122,7 +165,7 @@ class data_load(object):
             params = {'schema': self.conninfo[1],
                       'table_name': table_name,
                       'columns': cols
-                     }
+                      }
 
             drop_query = Template('''
                          -- drops first row containing header from table
@@ -138,14 +181,14 @@ class data_load(object):
 
     @logger.timer
     def execute_query(self, query):
-        """ executes sql queries generated through loop with mysql.connector """
-
+        """Execute sql queries generated through loop with mysql.connector."""
         try:
             # connecting to mysql rds instance
-            self.connection = mysql.connector.connect(host = self.conninfo[0],
-                                                      user = self.conninfo[2],
-                                                      passwd = self.conninfo[3],
-                                                      database = self.conninfo[1])
+            self.connection = mysql.connector.connect(host=self.conninfo[0],
+                                                      user=self.conninfo[2],
+                                                      passwd=self.conninfo[3],
+                                                      database=self.conninfo[1]
+                                                      )
             # executes query generated in the sql_generator function
             if self.connection.is_connected():
                 dbinfo = self.connection.get_server_info()
@@ -156,70 +199,58 @@ class data_load(object):
                 # mysql connector cannot execute a sql script
                 for command in query.split(';'):
                     try:
-                        if len(command.strip())>2:
-                            res = cursor.execute(command+';')
+                        if len(command.strip()) > 2:
+                            cursor.execute(command+';')
                             print(command)
-                            print('*'*30,'completed','*'*30,'\n')
+                            print('*'*30, 'completed', '*'*30, '\n')
                     except IOError as msg:
                         logging.error(' error executing query. . {}'.format(msg))
                         logging.info(' rolling back deployed resources . . . ')
-                        logging.info(logger._tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+                        logging.info(logger._tf_format(self.terf.destroy(no_color=IsFlagged, input=False, **self.approve, capture_output=True)))  # CHANGED: python_terraform
                         logging.info(' resources destroyed . . . ')
                         exit(0)
 
         except mysql.connector.Error as e:
             logging.error(' error connecting to db: {} . . .'.format(e))
             logging.info(' rolling back deployed resources . . . ')
-            logging.info(logger._tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True))) # CHANGED: python_terraform
+            logging.info(logger._tf_format(self.terf.destroy(no_color=IsFlagged, input=False, **self.approve, capture_output=True)))  # CHANGED: python_terraform
             logging.info(' resources destroyed . . . ')
             exit(0)
         finally:
             if self.connection.is_connected():
                 cursor.close()
                 self.connection.commit()
-                #self.connection.close()
+                # self.connection.close()
                 logging.info(' db connection is closed. . . ')
 
     @logger.timer
     def execute_bash(self, bash):
-        """executes bash script generated with a loop"""
-
+        """Execute bash script generated with a loop."""
         try:
-            bash = '; '.join(i.strip() for i in bash.split('\n') if len(i.strip())>2)
+            bash = '; '.join(i.strip() for i in bash.split('\n') if len(i.strip()) > 2)
             print(bash)
-            p = subprocess.Popen(bash, shell = True, stdout = subprocess.PIPE, bufsize=1)
+            p = subprocess.Popen(bash, shell=True, stdout=subprocess.PIPE,
+                                 bufsize=1)
             logging.info(p.communicate()[0].decode('UTF-8'))
         except:
             logging.error(' error in executing bash script. . . ')
             logging.error(' rolling back deployed resources . . . ')
-            logging.info(logger._tf_format(self.terf.destroy(no_color = IsFlagged, input = False, **self.approve, capture_output = True)))
+            logging.info(logger._tf_format(self.terf.destroy(
+                                           no_color=IsFlagged,
+                                           input=False,
+                                           **self.approve,
+                                           capture_output=True)))
             logging.info(' resources destroyed . . . ')
             exit(0)
 
-    def len_db_tables(self):
-        table_len = dict()
-        for raw_path in self.files:
-            cur = self.connection.cursor()
-            len_q = Template('''select count(*) from {{dbname}}.{{tablename}}''')
-            params = {'dbname': self.attributes['name'], 'tablename': os.path.basename(raw_path).split('.')[0]}
-            cur.execute(len_q.render(**params))
-            table_len[os.path.basename(raw_path).split('.')[0]] = cur.fetchall()[0][0]
-        return table_len
-
-    def len_df_tables(self):
-        df_len = dict()
-        for raw_path in self.files:
-            df = pd.read_csv(raw_path, sep = ',', error_bad_lines = False, dtype = object)
-            df_len[os.path.basename(raw_path).split('.')[0]] = len(df)
-        return df_len
 
 if __name__ == '__main__':
 
     logger()
     # defining options for running python file
-    parser = OptionParser(usage = "usage: python data_ingestion.py configfile sqloutput bashoutput", version = "1.0")
+    parser = OptionParser(usage="usage: python data_ingestion.py configfile sqloutput bashoutput", version="1.0")
     opts, args = parser.parse_args()
-    if len(args)<2:
+    if len(args) < 2:
         logging.error(' either config and/or output file is missing . . .')
         exit(0)
 
@@ -252,7 +283,16 @@ if __name__ == '__main__':
     logging.info(' dropping headers. . . .')
     generator.execute_query(query[1])
 
-    print(generator.len_db_tables()) # for unit tests
-    print(generator.len_df_tables()) # for unit tests
+    # generating test metrics
+    test = testing(generator)
+    testmetrics = {'db': test.len_db_tables(),
+                   'files': test.len_df_tables()}
+
+    # writing to temp pickle file,passing vars to pytest required more research
+    with open('test/tempdir/load_test_variable.dictionary', 'wb') as temp_var1:
+        pickle.dump(testmetrics, temp_var1)
+
+    # running pytest for the load operation
+    pytest.main(["test/test_load.py::test_load"])
 
     logging.info(' completed loading data to rds. . . .')

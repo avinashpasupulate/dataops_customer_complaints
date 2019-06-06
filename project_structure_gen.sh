@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # generating data science project folder structure
+#avinash.pasupulate@gmail.com
 
 mkdir -p src             # storing source code used during stages of project
 mkdir -p src/preparation # data ingestion
@@ -7,6 +8,7 @@ mkdir -p src/processing  # data processing
 mkdir -p src/modelling   # modelling
 
 mkdir -p test            # unit tests for code
+mkdir -p test/tempdir    # temp dir to store intermediate object files
 mkdir -p model           # storing intermediate results
 
 mkdir -p data            # storing project relevant data
