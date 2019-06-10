@@ -3,6 +3,7 @@
 *.csv
 *.zip
 .aws/*
+
 # terraform files & directories
 .terraform/plugins/darwin_amd64/terraform-provider-aws_v2.8.0_x4
 *.tfstate
@@ -12,6 +13,9 @@ terraform.tfvars
 
 #backup files
 *.bak
+
+#temp files
+tempdir/*
 
 # security
 *.pem

@@ -287,7 +287,7 @@ if __name__ == '__main__':
     test = testing(generator)
     testmetrics = {'db': test.len_db_tables(),
                    'files': test.len_df_tables()}
-
+    print("Testmetrics: {}".format(testmetrics))
     # writing to temp pickle file,passing vars to pytest required more research
     with open('test/tempdir/load_test_variable.dictionary', 'wb') as temp_var1:
         pickle.dump(testmetrics, temp_var1)

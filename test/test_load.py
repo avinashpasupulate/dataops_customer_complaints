@@ -13,25 +13,24 @@ from functools import wraps
 sys.path.append('src/preparation/')
 
 from data_ingestion_cli import logger
-# TODO: write tests to run for individual files
-# TODO: include logging and timing
 
+logging.info(" importing temp load test metrics from pickle file and testing")
+with open('test/tempdir/load_test_variable.dictionary', 'rb') as temp_var1:
+    test_var = pickle.load(temp_var1)
 
-@pytest.fixture
-def load_fixture():
-    """Import temp variable (test metrics) from a pickle file."""
-    logging.info(" importing temp load test metrics from pickle file and testing")
-    with open('test/tempdir/load_test_variable.dictionary', 'rb') as temp_var1:
-        test_var = pickle.load(temp_var1)
-    return test_var
+table_name = []
+vals = []
+for i, j in zip(test_var['db'], test_var['files']):
+    if i == j:
+        # table_name.append(i)
+        val_l = [test_var['db'][i]]
+        val_l.append(test_var['files'][j])
+        vals.append(tuple(val_l))
 
 
 @logger.timer
-def test_load(load_fixture):
+@pytest.mark.parametrize("t_input, expected", vals)
+def test_load(t_input, expected):
     """Run test variables for data load operation."""
-    for i in load_fixture['db']:
-        for j in load_fixture['files']:
-            if i == j:
-                # print(object['db'][i], object['db'][j])
-                assert load_fixture['db'][i] == load_fixture['db'][j]
+    assert t_input == expected
     logging.info(" completed load test to check number of rows")

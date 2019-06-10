@@ -22,3 +22,139 @@ loading deleted.part_aaaaab
 07/06/2019 02:35:31 INFO: Completed load test to check number of rows
 07/06/2019 02:35:31 INFO:  test_load function was executed in 0.00s
 07/06/2019 02:35:31 INFO:  completed loading data to rds. . . .
+10/06/2019 22:41:59 DEBUG: read data from tf/dev/terraform.tfstate
+10/06/2019 22:41:59 INFO:  bash_generator function was executed in 0.01s
+10/06/2019 22:41:59 INFO:  sql_generator function was executed in 0.03s
+10/06/2019 22:41:59 INFO:  creating tables. . . . . 
+10/06/2019 22:42:11 INFO:  connected to mysql server version: 5.7.22
+10/06/2019 22:42:13 INFO:  db connection is closed. . . 
+10/06/2019 22:42:13 INFO:  execute_query function was executed in 14.66s
+10/06/2019 22:42:13 INFO:  loading data to tables. . . . 
+10/06/2019 22:43:55 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+loading to deleted table . . . 
+loading deleted.part_aaaaaa
+loading deleted.part_aaaaab
+
+10/06/2019 22:43:55 INFO:  execute_bash function was executed in 101.85s
+10/06/2019 22:43:55 INFO:  dropping headers. . . .
+10/06/2019 22:44:03 INFO:  connected to mysql server version: 5.7.22
+10/06/2019 22:44:04 INFO:  db connection is closed. . . 
+10/06/2019 22:44:04 INFO:  execute_query function was executed in 9.15s
+10/06/2019 22:44:07 INFO:  importing temp load test metrics from pickle file and testing
+10/06/2019 22:44:07 INFO:  completed load test to check number of rows
+10/06/2019 22:44:07 INFO:  test_load function was executed in 0.00s
+10/06/2019 22:44:07 INFO:  completed loading data to rds. . . .
+10/06/2019 23:48:48 DEBUG: read data from tf/dev/terraform.tfstate
+10/06/2019 23:48:48 INFO:  bash_generator function was executed in 0.01s
+10/06/2019 23:48:48 INFO:  sql_generator function was executed in 0.03s
+10/06/2019 23:48:48 INFO:  creating tables. . . . . 
+10/06/2019 23:49:01 INFO:  connected to mysql server version: 5.7.22
+10/06/2019 23:49:03 INFO:  db connection is closed. . . 
+10/06/2019 23:49:03 INFO:  execute_query function was executed in 14.75s
+10/06/2019 23:49:03 INFO:  loading data to tables. . . . 
+10/06/2019 23:49:47 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+loading to deleted table . . . 
+loading deleted.part_aaaaaa
+loading deleted.part_aaaaab
+
+10/06/2019 23:49:47 INFO:  execute_bash function was executed in 44.57s
+10/06/2019 23:49:47 INFO:  dropping headers. . . .
+10/06/2019 23:49:56 INFO:  connected to mysql server version: 5.7.22
+10/06/2019 23:49:58 INFO:  db connection is closed. . . 
+10/06/2019 23:49:58 INFO:  execute_query function was executed in 10.48s
+10/06/2019 23:50:01 INFO:  completed loading data to rds. . . .
+10/06/2019 23:51:13 DEBUG: read data from tf/dev/terraform.tfstate
+10/06/2019 23:51:13 INFO:  bash_generator function was executed in 0.01s
+10/06/2019 23:51:13 INFO:  sql_generator function was executed in 0.01s
+10/06/2019 23:51:13 INFO:  creating tables. . . . . 
+10/06/2019 23:51:19 INFO:  connected to mysql server version: 5.7.22
+10/06/2019 23:51:22 INFO:  db connection is closed. . . 
+10/06/2019 23:51:22 INFO:  execute_query function was executed in 8.37s
+10/06/2019 23:51:22 INFO:  loading data to tables. . . . 
+10/06/2019 23:51:52 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+loading to deleted table . . . 
+loading deleted.part_aaaaaa
+loading deleted.part_aaaaab
+
+10/06/2019 23:51:52 INFO:  execute_bash function was executed in 30.31s
+10/06/2019 23:51:52 INFO:  dropping headers. . . .
+10/06/2019 23:51:56 INFO:  connected to mysql server version: 5.7.22
+10/06/2019 23:51:57 INFO:  db connection is closed. . . 
+10/06/2019 23:51:57 INFO:  execute_query function was executed in 5.45s
+10/06/2019 23:52:00 INFO:  test_load function was executed in 0.00s
+10/06/2019 23:52:00 INFO:  test_load function was executed in 0.00s
+10/06/2019 23:52:00 INFO:  completed loading data to rds. . . .
+11/06/2019 00:10:01 DEBUG: read data from tf/dev/terraform.tfstate
+11/06/2019 00:10:01 INFO:  bash_generator function was executed in 0.01s
+11/06/2019 00:10:01 INFO:  sql_generator function was executed in 0.02s
+11/06/2019 00:10:01 INFO:  creating tables. . . . . 
+11/06/2019 00:10:26 DEBUG: read data from tf/dev/terraform.tfstate
+11/06/2019 00:10:26 INFO:  bash_generator function was executed in 0.01s
+11/06/2019 00:10:26 INFO:  sql_generator function was executed in 0.01s
+11/06/2019 00:10:26 INFO:  creating tables. . . . . 
+11/06/2019 00:10:38 INFO:  connected to mysql server version: 5.7.22
+11/06/2019 00:10:40 INFO:  db connection is closed. . . 
+11/06/2019 00:10:40 INFO:  execute_query function was executed in 14.64s
+11/06/2019 00:10:40 INFO:  loading data to tables. . . . 
+11/06/2019 00:11:48 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+loading to deleted table . . . 
+loading deleted.part_aaaaaa
+loading deleted.part_aaaaab
+
+11/06/2019 00:11:48 INFO:  execute_bash function was executed in 67.77s
+11/06/2019 00:11:48 INFO:  dropping headers. . . .
+11/06/2019 00:11:53 INFO:  connected to mysql server version: 5.7.22
+11/06/2019 00:11:55 INFO:  db connection is closed. . . 
+11/06/2019 00:11:55 INFO:  execute_query function was executed in 6.58s
+11/06/2019 00:11:57 INFO:  importing temp load test metrics from pickle file and testing
+11/06/2019 00:11:57 INFO:  completed loading data to rds. . . .
+11/06/2019 00:14:07 DEBUG: read data from tf/dev/terraform.tfstate
+11/06/2019 00:14:07 INFO:  bash_generator function was executed in 0.01s
+11/06/2019 00:14:07 INFO:  sql_generator function was executed in 0.02s
+11/06/2019 00:14:07 INFO:  creating tables. . . . . 
+11/06/2019 00:14:13 INFO:  connected to mysql server version: 5.7.22
+11/06/2019 00:14:15 INFO:  db connection is closed. . . 
+11/06/2019 00:14:15 INFO:  execute_query function was executed in 8.31s
+11/06/2019 00:14:15 INFO:  loading data to tables. . . . 
+11/06/2019 00:14:49 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+loading to deleted table . . . 
+loading deleted.part_aaaaaa
+loading deleted.part_aaaaab
+
+11/06/2019 00:14:49 INFO:  execute_bash function was executed in 33.85s
+11/06/2019 00:14:49 INFO:  dropping headers. . . .
+11/06/2019 00:14:54 INFO:  connected to mysql server version: 5.7.22
+11/06/2019 00:14:56 INFO:  db connection is closed. . . 
+11/06/2019 00:14:56 INFO:  execute_query function was executed in 6.89s
+11/06/2019 00:14:58 INFO:  importing temp load test metrics from pickle file and testing
+11/06/2019 00:14:58 INFO:  completed loading data to rds. . . .
+11/06/2019 00:16:32 DEBUG: read data from tf/dev/terraform.tfstate
+11/06/2019 00:16:32 INFO:  bash_generator function was executed in 0.01s
+11/06/2019 00:16:32 INFO:  sql_generator function was executed in 0.03s
+11/06/2019 00:16:32 INFO:  creating tables. . . . . 
+11/06/2019 00:16:40 INFO:  connected to mysql server version: 5.7.22
+11/06/2019 00:16:43 INFO:  db connection is closed. . . 
+11/06/2019 00:16:43 INFO:  execute_query function was executed in 10.55s
+11/06/2019 00:16:43 INFO:  loading data to tables. . . . 
+11/06/2019 00:17:16 INFO: loading to ownership table . . . 
+loading ownership.part_aaaaaa
+loading to deleted table . . . 
+loading deleted.part_aaaaaa
+loading deleted.part_aaaaab
+
+11/06/2019 00:17:16 INFO:  execute_bash function was executed in 33.58s
+11/06/2019 00:17:16 INFO:  dropping headers. . . .
+11/06/2019 00:17:21 INFO:  connected to mysql server version: 5.7.22
+11/06/2019 00:17:23 INFO:  db connection is closed. . . 
+11/06/2019 00:17:23 INFO:  execute_query function was executed in 6.35s
+11/06/2019 00:17:25 INFO:  importing temp load test metrics from pickle file and testing
+11/06/2019 00:17:25 INFO:  completed load test to check number of rows
+11/06/2019 00:17:25 INFO:  test_load function was executed in 0.00s
+11/06/2019 00:17:25 INFO:  completed load test to check number of rows
+11/06/2019 00:17:25 INFO:  test_load function was executed in 0.00s
+11/06/2019 00:17:25 INFO:  completed loading data to rds. . . .
