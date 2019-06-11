@@ -293,6 +293,7 @@ if __name__ == '__main__':
         pickle.dump(testmetrics, temp_var1)
 
     # running pytest for the load operation
-    pytest.main(["test/test_load.py::test_load"])
+    # temporarily ignoring deprecation warnings raised for python 3.8
+    generator.execute_bash('pytest -v -W ignore::DeprecationWarning test/test_load.py::test_load')
 
     logging.info(' completed loading data to rds. . . .')

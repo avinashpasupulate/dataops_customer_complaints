@@ -27,6 +27,7 @@ ENTRYPOINT conda install -y pip \
                        mysql-connector-python \
                        python-terraform==0.10.0 && \
            mkdir data/raw/pgyr17_p011819 && \
+           conda update -y --all && \
            aws s3 cp s3://dataops-opencms/pgyr17_p011819.zip data/raw/ && \
            unzip data/raw/pgyr17_p011819.zip -d data/raw/pgyr17_p011819/ && \
            ls data/raw/pgyr17_p011819/ && \
