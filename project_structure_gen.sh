@@ -25,8 +25,7 @@ mkdir -p pipeline        # model automation pipeline
 
 mkdir -p tf              # generating infra for running model
 mkdir -p tf/dev          # terraform files for dev environment
-mkdir -p tf/preprod      # terraform files for staging environment
-mkdir -p tf/prod         # terraform files for production environment
+
 
 mkdir -p docs            # storing documentation product requirement & technical design specs, etc
 

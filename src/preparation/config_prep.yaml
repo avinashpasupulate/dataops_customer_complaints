@@ -4,5 +4,5 @@ info:
     base_path:
 
 rds_attributes:
-    tf_path: tf/dev/terraform.tfstate
+    tf_path: tf/dev/load/terraform.tfstate
     execution_timeout: 10800000

@@ -4,53 +4,7 @@ provider "aws" {
     profile = "default"
 }
 
-#resource "aws_instance" "model" {
-#    ami = "ami-2757f631"
-#    instance_type = "t2.micro"
-#}
-
-#vpc
-resource "aws_default_vpc" "default" {
-}
-
-#data - changed to private ip
-data "http" "ip" {
-    url = "http://ipv4.icanhazip.com"
-}
-#url = "http://169.254.169.254/latest/meta-data/local-ipv4/"
-
-
-#subnet
-resource "aws_default_subnet" "default" {
-    availability_zone = "us-east-1a"
-}
-
-#security group
 resource "aws_default_security_group" "default" {
-    vpc_id = "${aws_default_vpc.default.id}"
-    # inbound traffic only on 3306 from instance
-    ingress{
-        from_port = "3306"
-        to_port = "3306"
-        protocol = "tcp"
-        cidr_blocks = ["${chomp(data.http.ip.body)}/32"]
-    }
-    #temporarily allowing inbound traffic to rds for querying
-    ingress{
-        from_port = "3306"
-        to_port = "3306"
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-
-    #allowing all outbound traffic
-    egress{
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
 }
 
 resource "random_string" "uname" {

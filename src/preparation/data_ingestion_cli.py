@@ -43,9 +43,10 @@ class logger():
     """Format logs."""
 
     # parameters for logging
-    logging.basicConfig(filename='src/preparation/output_load/load_log.log',
-                        filemode='a',
-                        level=logging.DEBUG,
+    # use to log to file
+    # filename='src/preparation/output_load/load_log.log',
+    # filemode='a',
+    logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s: %(message)s',
                         datefmt='%d/%m/%Y %H:%M:%S')
 
@@ -106,7 +107,7 @@ class data_load(object):
     def __init__(self, params):
         """Initialize parameters."""
         # python-terraform parameters
-        self.terf = Terraform(working_dir='tf/dev')
+        self.terf = Terraform(working_dir='tf/dev/load')
         self.approve = {"auto_approve": True}
         self.files = glob.glob('data/raw/*/*.csv')
         self.params = params
@@ -127,7 +128,7 @@ class data_load(object):
         for raw_path in self.files:
             bash_split = Template('''
                             cd {{data_path}}
-                            echo "loading to {{prefix}} table . . . "
+                            echo "loading to {{prefix}} table"
                             split -a 6 -b 15m {{source_file}} {{prefix}}.part_
                             for FILE in {{prefix}}.part_*; do echo "loading $FILE"; mysql --port=3306 -h {{host}} -u {{user}} -p{{pwd}} --local-infile=1 --show-warnings --execute="LOAD DATA LOCAL INFILE '$FILE' INTO TABLE {{dbname}}.{{prefix}} FIELDS TERMINATED BY ',' ENCLOSED BY '\\"' LINES TERMINATED BY '\\n'"; done
                             rm -r {{prefix}}.part_*
@@ -205,23 +206,23 @@ class data_load(object):
                             print('*'*30, 'completed', '*'*30, '\n')
                     except IOError as msg:
                         logging.error(' error executing query. . {}'.format(msg))
-                        logging.info(' rolling back deployed resources . . . ')
+                        logging.info(' rolling back deployed resources')
                         logging.info(logger._tf_format(self.terf.destroy(no_color=IsFlagged, input=False, **self.approve, capture_output=True)))  # CHANGED: python_terraform
-                        logging.info(' resources destroyed . . . ')
+                        logging.info(' resources destroyed')
                         exit(0)
 
         except mysql.connector.Error as e:
             logging.error(' error connecting to db: {} . . .'.format(e))
-            logging.info(' rolling back deployed resources . . . ')
+            logging.info(' rolling back deployed resources')
             logging.info(logger._tf_format(self.terf.destroy(no_color=IsFlagged, input=False, **self.approve, capture_output=True)))  # CHANGED: python_terraform
-            logging.info(' resources destroyed . . . ')
+            logging.info(' resources destroyed')
             exit(0)
         finally:
             if self.connection.is_connected():
                 cursor.close()
                 self.connection.commit()
                 # self.connection.close()
-                logging.info(' db connection is closed. . . ')
+                logging.info(' db connection is closed')
 
     @logger.timer
     def execute_bash(self, bash):
@@ -233,14 +234,14 @@ class data_load(object):
                                  bufsize=1)
             logging.info(p.communicate()[0].decode('UTF-8'))
         except:
-            logging.error(' error in executing bash script. . . ')
-            logging.error(' rolling back deployed resources . . . ')
+            logging.error(' error in executing bash script')
+            logging.error(' rolling back deployed resources')
             logging.info(logger._tf_format(self.terf.destroy(
                                            no_color=IsFlagged,
                                            input=False,
                                            **self.approve,
                                            capture_output=True)))
-            logging.info(' resources destroyed . . . ')
+            logging.info(' resources destroyed')
             exit(0)
 
 
@@ -259,7 +260,7 @@ if __name__ == '__main__':
     try:
         generator = data_load(config)
     except:
-        logging.error(' one of the configuration parameters is not defined properly, most likely .tfstate is not populated yet. . . ')
+        logging.error(' one of the configuration parameters is not defined properly, most likely .tfstate is not populated yet')
         exit(0)
 
     # generating sql and bash statements
@@ -274,13 +275,13 @@ if __name__ == '__main__':
         f.write(query[0])
 
     # creating tables and loading data
-    logging.info(' creating tables. . . . . ')
+    logging.info(' creating tables')
     generator.execute_query(query[0])
 
-    logging.info(' loading data to tables. . . . ')
+    logging.info(' loading data to tables')
     generator.execute_bash(bash)
 
-    logging.info(' dropping headers. . . .')
+    logging.info(' dropping headers')
     generator.execute_query(query[1])
 
     # generating test metrics
@@ -296,4 +297,4 @@ if __name__ == '__main__':
     # temporarily ignoring deprecation warnings raised for python 3.8
     generator.execute_bash('pytest -v -W ignore::DeprecationWarning test/test_load.py::test_load')
 
-    logging.info(' completed loading data to rds. . . .')
+    logging.info(' completed loading data to rds')
