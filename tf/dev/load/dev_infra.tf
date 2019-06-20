@@ -4,9 +4,6 @@ provider "aws" {
     profile = "default"
 }
 
-resource "aws_default_security_group" "default" {
-}
-
 resource "random_string" "uname" {
     length = 10
     special = false
@@ -82,7 +79,7 @@ resource "aws_db_instance" "default" {
     parameter_group_name = "${aws_db_parameter_group.default.id}"
     username = "${random_string.uname.result}"
     password = "${random_string.key.result}"
-    vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
+    vpc_security_group_ids = ["sg-f27cf88e"]
 
     timeouts {
         create = "3h",

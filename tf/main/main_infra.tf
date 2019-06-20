@@ -43,6 +43,13 @@ resource "aws_default_security_group" "default" {
                   cidr_blocks = ["0.0.0.0/0"]
                   }
 
+          ingress{
+                  from_port = "22"
+                  to_port = "22"
+                  protocol = "tcp"
+                  cidr_blocks = ["0.0.0.0/0"]
+                  }
+
           #allowing all outbound traffic
           egress{
                   from_port = 0
@@ -61,7 +68,7 @@ data "aws_ami" "ubuntu" {
       most_recent = true
       filter {
               name   = "name"
-              values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+              values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
               }
       filter {
               name   = "virtualization-type"
@@ -70,12 +77,23 @@ data "aws_ami" "ubuntu" {
       owners = ["099720109477"] # Canonical
 }
 
+# "${data.aws_ami.ubuntu.id}"
+# ami-0c6b1d09930fac512 - Amazon Linux 2
+# ami-0756fbca465a59a30 - Amazon linux
+# ami-42a2532b - centOS
+
+
 resource "aws_instance" "main_test" {
-          ami = "${data.aws_ami.ubuntu.id}"
+          ami = "ami-0756fbca465a59a30"
           instance_type = "t2.micro"
           security_groups = ["${aws_default_security_group.default.id}"]
           subnet_id = "${aws_default_subnet.default.id}"
           iam_instance_profile = "s3_ec2_vpc_admin"
           private_ip = "172.31.48.100"
           user_data = "${data.template_file.userdata.template}"
+          key_name = "ec2new"
+          root_block_device {
+            volume_type = "gp2"
+            volume_size = "30"
+          }
 }
